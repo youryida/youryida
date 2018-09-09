@@ -1,9 +1,144 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-	<title></title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,user-scalable=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="cache-control" content="no-store, must-revalidate">
+    <meta http-equiv="expires" content="0">
+    <title>助力北漂❤️共建共赢</title>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th,
+    td {
+        text-align: center;
+        font-size: 13px;
+        padding: 5px 0;
+    }
+
+    th {
+        background: #ccc;
+        font-size: 14px;
+        /* font-size: 14px; */
+    }
+    </style>
 </head>
+
 <body>
-hello boy
+    <div id="app">
+        <table>
+            <thead>
+                <tr>
+                    <th>投资人</th>
+                    <th>起投时间</th>
+                    <th>退出时间</th>
+                    <th>额度</th>
+                    <th>今日收益</th>
+                    <th>累积收益</th>
+                </tr>
+            </thead>
+            <tbody v-for="one in info.investors">
+                <tr>
+                    <td>{{one.name}}</td>
+                    <td>{{one.startDay}}</td>
+                    <td>{{one.endDay}}</td>
+                    <td>*</td>
+                    <td>{{todayGains(one) | yuanFilter}}</td>
+                    <td>{{totalGains(one) | yuanFilter}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </body>
+<script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+<script type="text/javascript">
+const _INVESTORS=[{
+                name: "Q Guoli",
+                money: 20000,
+                startDay: "2018/08/31",
+                endDay:"2019/08/31"
+            },{
+                name: "X Minghuan",
+                money: 30000,
+                startDay: "2018/09/09",
+                endDay:"2019/08/31"
+            }];
+
+const app = new Vue({
+    el: '#app',
+    data: {
+        info: {
+            yearRate: 0.06,
+            investors: _INVESTORS
+        }
+    },
+    computed: {
+        // totalCounts() {
+        //     return this.weatherList.reduce((count, w) => {
+        //         return count + w.aqi;
+        //     }, 0);
+        // }
+    },
+    created() {
+        this.gainsAutoRefresh();
+        // fetch('http://cs.cdn.sohusce.com/test/weatherData.json')
+        //     .then(res => res.json())
+        //     .then(json => {
+        //         // console.log(json.data)
+        //         this.weatherList = json.data.forecast;
+        //     })
+    },
+    filters:{
+        yuanFilter(num){
+            return num.toFixed(4);
+        }
+    },
+    methods:{
+        gainsAutoRefresh(){
+            setInterval(x=>{
+                console.log(11);
+                this.info.investors.splice(0,_INVESTORS.length,..._INVESTORS);
+            },2000);
+        },
+        todayGains(one){
+            let baseMoney=one.money;
+            let nowDate=new Date();
+            let zeroPointDate=new Date(nowDate.toLocaleDateString()+" 00:00:00");
+            return this.getDateDiffGains(baseMoney,nowDate,zeroPointDate);
+        },
+        totalGains(one){
+            let baseMoney=one.money;
+            let nowDate=new Date();
+            let startDate=new Date(one.startDay+" 00:00:00");
+            return this.getDateDiffGains(baseMoney,nowDate,startDate);
+        },
+        getDateDiffGains(baseMoney,endDate,startDate){
+            let sRate=this.info.yearRate/365/24/60/60;
+            let pastSeconds=(endDate.getTime()-startDate.getTime())/1000;
+            let gains=pastSeconds*sRate*baseMoney;
+            return gains;
+
+        }
+    }
+
+});
+</script>
+
 </html>
