@@ -70,7 +70,7 @@
                 <tr>
                     <td colspan="4"></td>
                     <td>本息总计:</td>
-                    <td>{{globalTotalGains | yuanFilter}}</td>
+                    <td>{{globalPrincipalAndInterest | yuanFilter}}</td>
                 </tr>
             </tfoot>
         </table>
@@ -112,9 +112,10 @@ const app = new Vue({
         }
     },
     computed: {
-        globalTotalGains() {
+        //全部本息合计
+        globalPrincipalAndInterest() {
             return this.info.investors.reduce((num, one) => {
-                return num + this.totalGains(one);
+                return num + this.totalGains(one) + one.money;
             }, 0);
         }
     },
