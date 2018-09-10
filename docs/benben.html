@@ -46,20 +46,22 @@
         <table>
             <thead>
                 <tr>
-                    <th>投资人</th>
+                    <th>期数</th>
                     <th>起投时间</th>
-                    <th>退出时间</th>
+                    <!-- <th>退出时间</th> -->
+                    <th>收益率</th>
                     <th>额度</th>
                     <th>今日收益</th>
                     <th>累积收益</th>
                 </tr>
             </thead>
-            <tbody v-for="one in info.investors">
-                <tr>
-                    <td>{{one.name}}</td>
+            <tbody>
+                <tr v-for="(one, index) in info.investors">
+                    <td>{{index+1}}</td>
                     <td>{{one.startDay}}</td>
-                    <td>{{one.endDay}}</td>
-                    <td>*</td>
+                    <!-- <td>{{one.endDay}}</td> -->
+                    <td>{{getCurrentPeriodYearRate(one)}}</td>
+                    <td>{{one.money}}</td>
                     <td>{{todayGains(one) | yuanFilter}}</td>
                     <td>{{totalGains(one) | yuanFilter}}</td>
                 </tr>
@@ -70,15 +72,13 @@
 <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
 <script type="text/javascript">
 const _INVESTORS = [{
-    name: "Q Guoli",
     money: 20000,
     startDay: "2018/08/31",
-    endDay: "2019/08/31"
+    endDay: "-"
 }, {
-    name: "X Minghuan",
     money: 30000,
     startDay: "2018/09/09",
-    endDay: "2019/09/09"
+    endDay: "-"
 }];
 
 const app = new Vue({
@@ -86,6 +86,7 @@ const app = new Vue({
     data: {
         info: {
             yearRate: 0.06,
+            yearRateFull90Days: 0.07,
             investors: _INVESTORS
         }
     },
@@ -107,7 +108,7 @@ const app = new Vue({
     },
     filters: {
         yuanFilter(num) {
-            return num.toFixed(4);
+            return num.toFixed(3);
         }
     },
     methods: {
