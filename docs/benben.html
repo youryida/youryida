@@ -47,12 +47,12 @@
             <thead>
                 <tr>
                     <th>期数</th>
-                    <th>起投时间</th>
+                    <th>起息日</th>
                     <!-- <th>退出时间</th> -->
-                    <th>收益率</th>
+                    <th>利率</th>
                     <th>额度</th>
-                    <th>今日收益</th>
-                    <th>累积收益</th>
+                    <th>今日计息</th>
+                    <th>累积计息</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,24 +60,47 @@
                     <td>{{index+1}}</td>
                     <td>{{one.startDay}}</td>
                     <!-- <td>{{one.endDay}}</td> -->
-                    <td>{{getCurrentPeriodYearRate(one)}}</td>
+                    <td>{{getCurrentPeriodYearRate(new Date(one.startDay)) | percentageFilter}}</td>
                     <td>{{one.money}}</td>
                     <td>{{todayGains(one) | yuanFilter}}</td>
                     <td>{{totalGains(one) | yuanFilter}}</td>
                 </tr>
             </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4"></td>
+                    <td>本息总计:</td>
+                    <td>{{globalTotalGains | yuanFilter}}</td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </body>
 <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
 <script type="text/javascript">
+const _RATE_OF_YEAR = {
+    "0": 0.07,
+    "90": 0.08
+}
 const _INVESTORS = [{
-    money: 20000,
-    startDay: "2018/08/31",
+    money: 50000,
+    startDay: "2018/03/22",
     endDay: "-"
 }, {
-    money: 30000,
-    startDay: "2018/09/09",
+    money: 20000,
+    startDay: "2018/05/11",
+    endDay: "-"
+}, {
+    money: 100000,
+    startDay: "2018/05/17",
+    endDay: "-"
+}, {
+    money: 40000,
+    startDay: "2018/06/12",
+    endDay: "-"
+}, {
+    money: 50000,
+    startDay: "2018/07/12",
     endDay: "-"
 }];
 
@@ -85,17 +108,15 @@ const app = new Vue({
     el: '#app',
     data: {
         info: {
-            yearRate: 0.06,
-            yearRateFull90Days: 0.07,
             investors: _INVESTORS
         }
     },
     computed: {
-        // totalCounts() {
-        //     return this.weatherList.reduce((count, w) => {
-        //         return count + w.aqi;
-        //     }, 0);
-        // }
+        globalTotalGains() {
+            return this.info.investors.reduce((num, one) => {
+                return num + this.totalGains(one);
+            }, 0);
+        }
     },
     created() {
         this.gainsAutoRefresh();
@@ -109,6 +130,9 @@ const app = new Vue({
     filters: {
         yuanFilter(num) {
             return num.toFixed(3);
+        },
+        percentageFilter(num) {
+            return (num * 100).toFixed(0) + '%';
         }
     },
     methods: {
@@ -131,11 +155,23 @@ const app = new Vue({
             return this.getDateDiffGains(baseMoney, nowDate, startDate);
         },
         getDateDiffGains(baseMoney, endDate, startDate) {
-            let sRate = this.info.yearRate / 365 / 24 / 60 / 60;
-            let pastSeconds = (endDate.getTime() - startDate.getTime()) / 1000;
-            let gains = pastSeconds * sRate * baseMoney;
-            return gains;
 
+            let secondsRate = this.getCurrentPeriodYearRate(startDate) / 365 / 24 / 60 / 60;
+            let pastSeconds = this.getDateDiffSeconds(endDate, startDate);
+            let gains = pastSeconds * secondsRate * baseMoney;
+            return gains;
+        },
+        getDateDiffSeconds(endDate, startDate) {
+            return (endDate.getTime() - startDate.getTime()) / 1000;
+        },
+        /*
+        满90天 更高利率
+         */
+        getCurrentPeriodYearRate(startDate) {
+            let nowDate = new Date();
+            let pastSeconds = this.getDateDiffSeconds(nowDate, startDate);
+            let rate = pastSeconds > 90 * 24 * 60 * 60 ? _RATE_OF_YEAR["90"] : _RATE_OF_YEAR["0"];
+            return rate;
         }
     }
 
