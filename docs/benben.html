@@ -56,32 +56,35 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(one, index) in info.investors">
+                <tr v-for="(one, index) in investors">
                     <td>{{index+1}}</td>
                     <td>{{one.startDay}}</td>
                     <!-- <td>{{one.endDay}}</td> -->
-                    <td>{{getCurrentPeriodYearRate(new Date(one.startDay)) | percentageFilter}}</td>
+                    <td>{{ calcYearRateByStartDay(one.startDay) | percentageFilter}}</td>
                     <td>{{one.money}}</td>
-                    <td>{{todayGains(one) | yuanFilter}}</td>
-                    <td>{{totalGains(one) | yuanFilter}}</td>
+                    <td>{{todayGains(one) | yuanFilter(2)}}</td>
+                    <td>{{totalGains(one) | yuanFilter(2)}}</td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
                     <td colspan="4"></td>
                     <td>本息总计:</td>
-                    <td>{{globalPrincipalAndInterest | yuanFilter}}</td>
+                    <td>{{globalPrincipalAndInterest | yuanFilter(2)}}</td>
                 </tr>
             </tfoot>
         </table>
     </div>
 </body>
 <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
-<script type="text/javascript">
-const _RATE_OF_YEAR = {
-    "0": 0.07,
-    "90": 0.08
-}
+<script type="module" type="text/javascript">
+import money from './assets/js/money.js';
+
+const _YEAR_RATE_STEP = [
+    [0, 0.07],
+    [90, 0.08]
+];
+
 const _INVESTORS = [{
     money: 50000,
     startDay: "2018/03/22",
@@ -107,30 +110,22 @@ const _INVESTORS = [{
 const app = new Vue({
     el: '#app',
     data: {
-        info: {
-            investors: _INVESTORS
-        }
+        investors: _INVESTORS
     },
     computed: {
         //全部本息合计
         globalPrincipalAndInterest() {
-            return this.info.investors.reduce((num, one) => {
+            return this.investors.reduce((num, one) => {
                 return num + this.totalGains(one) + one.money;
             }, 0);
         }
     },
     created() {
         this.gainsAutoRefresh();
-        // fetch('http://cs.cdn.sohusce.com/test/weatherData.json')
-        //     .then(res => res.json())
-        //     .then(json => {
-        //         // console.log(json.data)
-        //         this.weatherList = json.data.forecast;
-        //     })
     },
     filters: {
-        yuanFilter(num) {
-            return num.toFixed(3);
+        yuanFilter(num, fixed = 3) {
+            return num.toFixed(fixed);
         },
         percentageFilter(num) {
             return (num * 100).toFixed(0) + '%';
@@ -139,40 +134,29 @@ const app = new Vue({
     methods: {
         gainsAutoRefresh() {
             setInterval(x => {
-                console.log(11);
-                this.info.investors.splice(0, _INVESTORS.length, ..._INVESTORS);
+                this.investors.splice(0, _INVESTORS.length, ..._INVESTORS);
             }, 2000);
         },
         todayGains(one) {
             let baseMoney = one.money;
-            let nowDate = new Date();
-            let zeroPointDate = new Date(nowDate.toLocaleDateString() + " 00:00:00");
-            return this.getDateDiffGains(baseMoney, nowDate, zeroPointDate);
+            let nowDate = new Date(),
+                startDate = new Date(one.startDay);
+            let zeroPointDate = new Date(nowDate.toLocaleDateString());
+            let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
+            return money.getDateDiffGains(baseMoney, yearRate, zeroPointDate, nowDate);
         },
         totalGains(one) {
             let baseMoney = one.money;
-            let nowDate = new Date();
-            let startDate = new Date(one.startDay + " 00:00:00");
-            return this.getDateDiffGains(baseMoney, nowDate, startDate);
-        },
-        getDateDiffGains(baseMoney, endDate, startDate) {
-
-            let secondsRate = this.getCurrentPeriodYearRate(startDate) / 365 / 24 / 60 / 60;
-            let pastSeconds = this.getDateDiffSeconds(endDate, startDate);
-            let gains = pastSeconds * secondsRate * baseMoney;
-            return gains;
-        },
-        getDateDiffSeconds(endDate, startDate) {
-            return (endDate.getTime() - startDate.getTime()) / 1000;
+            let nowDate = new Date(),
+                startDate = new Date(one.startDay);
+            let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
+            return money.getDateDiffGains(baseMoney, yearRate, startDate, nowDate);
         },
         /*
-        满90天 更高利率
+        计算当期年利率
          */
-        getCurrentPeriodYearRate(startDate) {
-            let nowDate = new Date();
-            let pastSeconds = this.getDateDiffSeconds(nowDate, startDate);
-            let rate = pastSeconds > 90 * 24 * 60 * 60 ? _RATE_OF_YEAR["90"] : _RATE_OF_YEAR["0"];
-            return rate;
+        calcYearRateByStartDay(startDay) {
+            return money.getCurrentPeriodYearRate(new Date(startDay), _YEAR_RATE_STEP)
         }
     }
 
