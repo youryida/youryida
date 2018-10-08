@@ -108,6 +108,7 @@
 <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
 <script type="module" type="text/javascript">
 import money from './assets/js/money.js';
+const _AUTO_REFRESH_TIME=1200;
 const _YEAR_RATE_STEP = [
     [0, 0.06]
 ];
@@ -136,6 +137,21 @@ const _INVESTORS = [{
     money: 10000,
     startDay: "2018/09/29",
     endDay: "2019/09/29"
+}, {
+    name: "ZhangShuai",
+    money: 100000,
+    startDay: "2018/10/01",
+    endDay: "2019/10/01"
+}, {
+    name: "LiJiKun",
+    money: 30000,
+    startDay: "2018/10/08",
+    endDay: "2019/10/08"
+}, {
+    name: "TuKe",
+    money: 40000,
+    startDay: "2018/10/09",
+    endDay: "2020/10/09"
 }];
 
 const app = new Vue({
@@ -181,7 +197,7 @@ const app = new Vue({
         gainsAutoRefresh() {
             setInterval(x => {
                 this.investors.splice(0, _INVESTORS.length, ..._INVESTORS);
-            }, 2000);
+            }, _AUTO_REFRESH_TIME);
         },
         todayGains(one) {
             let baseMoney = one.money;
