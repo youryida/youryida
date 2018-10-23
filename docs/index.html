@@ -107,7 +107,132 @@
 </body>
 <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
 <script type="module">
-    import money from './assets/js/money.js'; const _AUTO_REFRESH_TIME = 1200; const _YEAR_RATE_STEP = [ [0, 0.06] ]; const _INVESTORS = [{ name: "QiGuoLi", money: 20000, startDay: "2018/09/01", endDay: "2019/03/01" }, { name: "YuJiuSheng", money: 20000, startDay: "2018/09/08", endDay: "2019/03/08" }, { name: "XiaoMingHuan", money: 30000, startDay: "2018/09/09", endDay: "2019/09/09" }, { name: "ZhaoFuYang", money: 10000, startDay: "2018/09/18", endDay: "2019/09/18" }, { name: "LiangDaoBai", money: 10000, startDay: "2018/09/29", endDay: "2019/09/29" }, { name: "ZhangShuai", money: 100000, startDay: "2018/10/01", endDay: "2019/10/01" }, { name: "LiJiKun", money: 30000, startDay: "2018/10/08", endDay: "2019/10/08" }, { name: "TuKe", money: 40000, startDay: "2018/10/09", endDay: "2020/10/09" }, { name: "TuHaoA", money: 200000, startDay: "2018/10/10", endDay: "2018/12/10" }, { name: "FengYinChao", money: 50000, startDay: "2018/10/16", endDay: "2019/10/16" }]; const app = new Vue({ el: '#app', data: { investors: _INVESTORS, ui: { table: { cols: 6 } } }, computed: { // totalCounts() { // return this.weatherList.reduce((count, w) => { // return count + w.aqi; // }, 0); // } }, created() { this.gainsAutoRefresh(); // fetch('http://cs.cdn.sohusce.com/test/weatherData.json') // .then(res => res.json()) // .then(json => { // // console.log(json.data) // this.weatherList = json.data.forecast; // }) }, filters: { yuanFilter(num, fixed = 3) { return num.toFixed(fixed); }, percentageFilter(num) { return (num * 100).toFixed(0) + '%'; }, investorNameFilter(name) { return name.replace(/(\w+)([A-Z]\w+)/, function(s, m1, m2) { return m1.replace(/[a-z]/g, '') + m2; }) } }, methods: { gainsAutoRefresh() { setInterval(x => { this.investors.splice(0, _INVESTORS.length, ..._INVESTORS); }, _AUTO_REFRESH_TIME); }, todayGains(one) { let baseMoney = one.money; let nowDate = new Date(), startDate = new Date(one.startDay); let zeroPointDate = new Date(nowDate.toLocaleDateString()); let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP); return money.getDateDiffGains(baseMoney, yearRate, zeroPointDate, nowDate); }, totalGains(one) { let baseMoney = one.money; let nowDate = new Date(), startDate = new Date(one.startDay); let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP); return money.getDateDiffGains(baseMoney, yearRate, startDate, nowDate); }, /* 计算当期年利率 */ calcYearRateByStartDay(startDay) { return money.getCurrentPeriodYearRate(new Date(startDay), _YEAR_RATE_STEP) } } });
+import money from './assets/js/money.js';
+const _AUTO_REFRESH_TIME = 1200;
+const _YEAR_RATE_STEP = [
+    [0, 0.06]
+];
+const _INVESTORS = [{
+    name: "QiGuoLi",
+    money: 20000,
+    startDay: "2018/09/01",
+    endDay: "2019/03/01"
+}, {
+    name: "YuJiuSheng",
+    money: 20000,
+    startDay: "2018/09/08",
+    endDay: "2019/03/08"
+}, {
+    name: "XiaoMingHuan",
+    money: 30000,
+    startDay: "2018/09/09",
+    endDay: "2019/09/09"
+}, {
+    name: "ZhaoFuYang",
+    money: 10000,
+    startDay: "2018/09/18",
+    endDay: "2019/09/18"
+}, {
+    name: "LiangDaoBai",
+    money: 10000,
+    startDay: "2018/09/29",
+    endDay: "2019/09/29"
+}, {
+    name: "ZhangShuai",
+    money: 100000,
+    startDay: "2018/10/01",
+    endDay: "2019/10/01"
+}, {
+    name: "LiJiKun",
+    money: 30000,
+    startDay: "2018/10/08",
+    endDay: "2019/10/08"
+}, {
+    name: "TuKe",
+    money: 40000,
+    startDay: "2018/10/09",
+    endDay: "2020/10/09"
+}, {
+    name: "TuHaoA",
+    money: 200000,
+    startDay: "2018/10/10",
+    endDay: "2018/12/10"
+}, {
+    name: "FengYinChao",
+    money: 50000,
+    startDay: "2018/10/16",
+    endDay: "2019/10/16"
+}];
+
+const app = new Vue({
+    el: '#app',
+    data: {
+        investors: _INVESTORS,
+        ui: {
+            table: {
+                cols: 6
+            }
+        }
+    },
+    computed: {
+        // totalCounts() {
+        //     return this.weatherList.reduce((count, w) => {
+        //         return count + w.aqi;
+        //     }, 0);
+        // }
+    },
+    created() {
+        this.gainsAutoRefresh();
+        // fetch('http://cs.cdn.sohusce.com/test/weatherData.json')
+        //     .then(res => res.json())
+        //     .then(json => {
+        //         // console.log(json.data)
+        //         this.weatherList = json.data.forecast;
+        //     })
+    },
+    filters: {
+        yuanFilter(num, fixed = 3) {
+            return num.toFixed(fixed);
+        },
+        percentageFilter(num) {
+            return (num * 100).toFixed(0) + '%';
+        },
+        investorNameFilter(name) {
+            return name.replace(/(\w+)([A-Z]\w+)/, function(s, m1, m2) {
+                return m1.replace(/[a-z]/g, '') + m2;
+            })
+        }
+    },
+    methods: {
+        gainsAutoRefresh() {
+            setInterval(x => {
+                this.investors.splice(0, _INVESTORS.length, ..._INVESTORS);
+            }, _AUTO_REFRESH_TIME);
+        },
+        todayGains(one) {
+            let baseMoney = one.money;
+            let nowDate = new Date(),
+                startDate = new Date(one.startDay);
+            let zeroPointDate = new Date(nowDate.toLocaleDateString());
+            let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
+            return money.getDateDiffGains(baseMoney, yearRate, zeroPointDate, nowDate);
+        },
+        totalGains(one) {
+            let baseMoney = one.money;
+            let nowDate = new Date(),
+                startDate = new Date(one.startDay);
+            let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
+            return money.getDateDiffGains(baseMoney, yearRate, startDate, nowDate);
+        },
+        /*
+        计算当期年利率
+         */
+        calcYearRateByStartDay(startDay) {
+            return money.getCurrentPeriodYearRate(new Date(startDay), _YEAR_RATE_STEP)
+        }
+    }
+
+});
 </script>
 
 </html>
