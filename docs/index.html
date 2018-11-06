@@ -5,12 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,minimum-scale=1,maximum-scale=1,user-scalable=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1">
-    <meta http-equiv="pragma" content="no-cache">
-    <meta http-equiv="cache-control" content="no-store, must-revalidate">
-    <meta http-equiv="expires" content="0">
     <title>助力北漂❤️感恩有你</title>
     <style>
-    * {
+        * {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -46,15 +43,12 @@
         text-align: center;
         font-size: 12px;
         line-height: 14px;
-        height: 30px;
-
-        /* padding: 8px 0; */
+        height: 34px;
     }
 
     thead th {
         border-bottom: 2px solid #333;
         background: #efefef;
-        /* padding: 4px 0 4px 0; */
         /* font-size: 14px; */
     }
 
@@ -67,7 +61,7 @@
         border-top: 1px solid #efefef;
         font-size: 10px;
         text-align: left;
-        padding: 5px 4px;
+        padding: 0px 4px;
     }
     </style>
 </head>
@@ -79,11 +73,10 @@
             <thead>
                 <tr>
                     <th>出借人</th>
-                                        <th>额度</th>
+                    <th>额度</th>
                     <th>起息日</th>
                     <th>预还款日</th>
                     <th>还款日</th>
-
                     <th>今日计息</th>
                     <th>累积计息</th>
                 </tr>
@@ -91,11 +84,11 @@
             <tbody>
                 <tr v-for="one in investors">
                     <td>{{one.name | investorNameFilter}}</td>
+                    <td>*</td>
                     <td>{{one.startDay}}</td>
                     <td>{{one.endDay}}</td>
                     <td v-html="repayRender(one)"></td>
-                    <td>*</td>
-                    <td>{{todayGains(one) | yuanFilter(3)}}</td>
+                    <td>{{todayGains(one) | yuanFilter(3,"已结清")}}</td>
                     <td>{{totalGains(one) | yuanFilter(3)}}</td>
                 </tr>
             </tbody>
@@ -114,175 +107,207 @@
 </body>
 <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
 <script type="module">
-import money from './assets/js/money.js';
-const _AUTO_REFRESH_TIME = 1200;
-const _YEAR_RATE_STEP = [
-    [0, 0.06]
-];
-//还款状态
-const REPAY_STATUS={
-    noyet:-1,
-    paying:0,//部分偿还 约定为偿还当期全部利息和部分本金，后续利息应该按剩余本金计算
-    settled:1
-}
-const _INVESTORS = [{
-    name: "QiGuoLi",
-    money: 20000,
-    startDay: "2018/09/01",
-    endDay: "2019/03/01",
-    repay:{
-        time:"2018/11/06 14:34",
-        money:20219,
-        status:1
+    import money from './assets/js/money.js';
+    const _AUTO_REFRESH_TIME = 1200;
+    const _YEAR_RATE_STEP = [
+        [0, 0.06]
+    ];
+    //还款状态
+    const REPAY_STATUS = {
+        noyet: -1,
+        paying: 0,//部分偿还 约定为偿还当期全部利息和部分本金，后续利息应该按剩余本金计算
+        settled: 1
     }
-}, {
-    name: "YuJiuSheng",
-    money: 20000,
-    startDay: "2018/09/08",
-    endDay: "2019/03/08",
-    repay:{
-        time:"2018/10/31 14:16",
-        money:20177,
-        status:1
-    }
-}, {
-    name: "XiaoMingHuan",
-    money: 30000,
-    startDay: "2018/09/09",
-    endDay: "2019/09/09"
-}, {
-    name: "ZhaoFuYang",
-    money: 10000,
-    startDay: "2018/09/18",
-    endDay: "2019/09/18"
-}, {
-    name: "LiangDaoBai",
-    money: 10000,
-    startDay: "2018/09/29",
-    endDay: "2019/09/29"
-}, {
-    name: "ZhangShuai",
-    money: 100000,
-    startDay: "2018/10/01",
-    endDay: "2019/10/01"
-}, {
-    name: "LiJiKun",
-    money: 30000,
-    startDay: "2018/10/08",
-    endDay: "2019/10/08"
-}, {
-    name: "TuKe",
-    money: 40000,
-    startDay: "2018/10/09",
-    endDay: "2020/10/09"
-}, {
-    name: "TuHaoA",
-    money: 200000,
-    startDay: "2018/10/10",
-    endDay: "2018/12/10"
-}, {
-    name: "FengYinChao",
-    money: 50000,
-    startDay: "2018/10/16",
-    endDay: "2019/10/16"
-}];
+    const _INVESTORS = [{
+        name: "QiGuoLi",
+        money: 20000,
+        startDay: "2018/09/01",
+        endDay: "2019/03/01",
+        repay: {
+            time: "2018/11/06 14:34",
+            money: 20219,
+            status: 1,
+            way: "招商银行"
+        }
+    }, {
+        name: "YuJiuSheng",
+        money: 20000,
+        startDay: "2018/09/08",
+        endDay: "2019/03/08",
+        repay: {
+            time: "2018/10/31 14:16",
+            money: 20177,
+            status: 1,
+            way: "招商银行"
+        }
+    }, {
+        name: "ZhaoFuYang",
+        money: 10000,
+        startDay: "2018/09/18",
+        endDay: "2019/09/18"
+    }, {
+        name: "LiangDaoBai",
+        money: 10000,
+        startDay: "2018/09/29",
+        endDay: "2019/09/29"
+    }, {
+        name: "ZhangShuai",
+        money: 100000,
+        startDay: "2018/10/01",
+        endDay: "2019/10/01"
+    }, {
+        name: "LiJiKun",
+        money: 30000,
+        startDay: "2018/10/08",
+        endDay: "2019/10/08"
+    }, {
+        name: "TuKe",
+        money: 40000,
+        startDay: "2018/10/09",
+        endDay: "2020/10/09"
+    }, {
+        name: "TuhaoA",
+        money: 200000,
+        startDay: "2018/10/10",
+        endDay: "2018/12/10"
+    }, {
+        name: "FengYinChao",
+        money: 50000,
+        startDay: "2018/10/16",
+        endDay: "2019/10/16"
+    }, {
+        name: "ZhaoLanYing",
+        money: 30000,
+        startDay: "2018/09/09",
+        endDay: "2019/09/09"
+    }, {
+        name: "ZhaoLanYing",
+        money: 133000,
+        startDay: "2018/10/20",
+        endDay: "2020/10/20"
+    }, {
+        name: "LiuQingGuang",
+        money: 70000,
+        startDay: "2018/10/20",
+        endDay: "2020/10/20"
+    }, {
+        name: "LiuFengXiang",
+        money: 20000,
+        startDay: "2018/10/20",
+        endDay: "2020/10/20"
+    }, {
+        name: "LiuQing",
+        money: 97000,
+        startDay: "2018/10/20",
+        endDay: "2020/10/20"
+    }, {
+        name: "LiuZhi",
+        money: 10000,
+        startDay: "2018/10/20",
+        endDay: "2020/10/20"
+    }, {
+        name: "LiuHuiJie",
+        money: 60000,
+        startDay: "2018/10/23",
+        endDay: "2020/10/23"
+    }];
 
-const app = new Vue({
-    el: '#app',
-    data: {
-        investors: _INVESTORS,
-        ui: {
-            table: {
-                cols: 7
+    const app = new Vue({
+        el: '#app',
+        data: {
+            investors: _INVESTORS,
+            ui: {
+                table: {
+                    cols: 7
+                }
+            }
+        },
+        computed: {
+            // totalCounts() {
+            //     return this.weatherList.reduce((count, w) => {
+            //         return count + w.aqi;
+            //     }, 0);
+            // }
+        },
+        created() {
+            this.gainsAutoRefresh();
+            // fetch('http://cs.cdn.sohusce.com/test/weatherData.json')
+            //     .then(res => res.json())
+            //     .then(json => {
+            //         // console.log(json.data)
+            //         this.weatherList = json.data.forecast;
+            //     })
+        },
+        filters: {
+            yuanFilter(num, fixed = 3, zeroText = "-") {
+                let result = num.toFixed(fixed) + '';
+                result = result.replace(/\.?0*$/, '');
+                result = result == 0 ? zeroText : result;
+                return result;
+            },
+            percentageFilter(num) {
+                return (num * 100).toFixed(0) + '%';
+            },
+            investorNameFilter(name) {
+                return name.replace(/(\w+?)([A-Z])(.+)/, function (s, m1, m2, m3) {
+                    return m1 + " " + m2 + m3.replace(/[a-z]+/g, ".");
+                })
+            }
+        },
+        methods: {
+            gainsAutoRefresh() {
+                setInterval(x => {
+                    this.investors.splice(0, _INVESTORS.length, ..._INVESTORS);
+                }, _AUTO_REFRESH_TIME);
+            },
+            todayGains(one) {
+                //当日某个时间点结清的话 按理说 应该显示一个不动的当日计息
+                let gains = 0, repay = one.repay;
+                if (repay && repay.status == REPAY_STATUS.settled) {//历史已结清的
+                    gains = 0;
+                } else {
+                    let baseMoney = one.money;
+                    let nowDate = new Date(),
+                        startDate = new Date(one.startDay);
+                    let zeroPointDate = new Date(nowDate.toLocaleDateString());
+                    let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
+                    gains = money.getDateDiffGains(baseMoney, yearRate, zeroPointDate, nowDate);
+                }
+
+                return gains;
+            },
+            totalGains(one) {
+                let gains = 0, repay = one.repay;
+                if (repay && repay.status == REPAY_STATUS.settled) {//历史已结清的
+                    gains = repay.money - one.money;
+                } else {
+                    //未结过的
+                    let baseMoney = one.money;
+                    let nowDate = new Date(),
+                        startDate = new Date(one.startDay);
+                    let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
+                    gains = money.getDateDiffGains(baseMoney, yearRate, startDate, nowDate);
+                }
+
+                return gains;
+            },
+            /*
+            计算当期年利率
+             */
+            calcYearRateByStartDay(startDay) {
+                return money.getCurrentPeriodYearRate(new Date(startDay), _YEAR_RATE_STEP)
+            },
+            /**
+             * 还款时间渲染
+             */
+            repayRender(one, noneText = "-") {
+                let html = one.repay ? one.repay.time : noneText;
+                html = html.replace(" ", "<br>")
+                return `<small>${html}</small>`;
             }
         }
-    },
-    computed: {
-        // totalCounts() {
-        //     return this.weatherList.reduce((count, w) => {
-        //         return count + w.aqi;
-        //     }, 0);
-        // }
-    },
-    created() {
-        this.gainsAutoRefresh();
-        // fetch('http://cs.cdn.sohusce.com/test/weatherData.json')
-        //     .then(res => res.json())
-        //     .then(json => {
-        //         // console.log(json.data)
-        //         this.weatherList = json.data.forecast;
-        //     })
-    },
-    filters: {
-        yuanFilter(num, fixed = 3,zeroText="-") {
-            let result=num.toFixed(fixed)+'';
-            result=result.replace(/\.?0*$/,'');
-            result=result==0? zeroText :result;
-            return result;
-        },
-        percentageFilter(num) {
-            return (num * 100).toFixed(0) + '%';
-        },
-        investorNameFilter(name) {
-            return name.replace(/(\w+)([A-Z]\w+)/, function(s, m1, m2) {
-                return m1.replace(/[a-z]/g, '') + m2;
-            })
-        }
-    },
-    methods: {
-        gainsAutoRefresh() {
-            setInterval(x => {
-                this.investors.splice(0, _INVESTORS.length, ..._INVESTORS);
-            }, _AUTO_REFRESH_TIME);
-        },
-        todayGains(one) {
-            //当日某个时间点结清的话 按理说 应该显示一个不动的当日计息
-            let gains=0,repay=one.repay;
-            if(repay && repay.status==REPAY_STATUS.settled){//历史已结清的
-                gains=0;
-            }else{
-                let baseMoney = one.money;
-                let nowDate = new Date(),
-                    startDate = new Date(one.startDay);
-                let zeroPointDate = new Date(nowDate.toLocaleDateString());
-                let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
-                gains=money.getDateDiffGains(baseMoney, yearRate, zeroPointDate, nowDate);
-            }
 
-            return gains;
-        },
-        totalGains(one) {
-            let gains=0,repay=one.repay;
-            if(repay && repay.status==REPAY_STATUS.settled){//历史已结清的
-                gains=repay.money-one.money;
-            }else{
-                //未结过的
-                let baseMoney = one.money;
-                let nowDate = new Date(),
-                    startDate = new Date(one.startDay);
-                let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
-                gains=money.getDateDiffGains(baseMoney, yearRate, startDate, nowDate);
-            }
-
-            return gains;
-        },
-        /*
-        计算当期年利率
-         */
-        calcYearRateByStartDay(startDay) {
-            return money.getCurrentPeriodYearRate(new Date(startDay), _YEAR_RATE_STEP)
-        },
-        /**
-         * 还款时间渲染
-         */
-        repayRender(one,noneText="-"){
-            let html=one.repay?one.repay.time : noneText;
-            html=html.replace(" ","<br>")
-            return  html;
-        }
-    }
-
-});
+    });
 </script>
 
 </html>
