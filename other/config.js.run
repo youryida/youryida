@@ -1,0 +1,46 @@
+gPrefView[view.selection.currentIndex]
+{…}
+​
+prefCol: "network.trr.uri"
+​
+valueCol: "https://mozilla.cloudflare-dns.com/dns-query"
+​
+<prototype>: {…}
+​​
+lockCol: 0
+​​
+typeCol: 32
+​​
+valueCol: ""
+​​
+<prototype>: Object { … }
+
+
+nsIPrefBranch.PREF_INT
+64
+
+about:debugging#addons
+
+
+/*
+network.trr.mode && network.trr.uri
+ */
+
+//修改 
+
+const MY_TRR_URI="https://dns.rubyfish.cn/dns-query";
+gPrefBranch.setStringPref("network.trr.mode", 2);
+gPrefBranch.setStringPref("network.trr.uri", MY_TRR_URI);
+Services.prefs.savePrefFile(null);
+
+//还原默认
+gPrefBranch.clearUserPref("network.trr.mode");
+gPrefBranch.clearUserPref("network.trr.uri");
+
+browser.tabs.executeScript(）没有权限向"about:config"页面注入脚本。
+参考：https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/tabs/executeScript
+
+You can't inject code into any of the browser's built-in pages, such as about:debugging, about:addons, or the page that opens when you open a new empty tab.
+
+
+
