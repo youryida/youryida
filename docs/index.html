@@ -44,8 +44,11 @@
     th,
     td {
         text-align: center;
-        font-size: 13px;
-        padding: 8px 0;
+        font-size: 12px;
+        line-height: 14px;
+        height: 30px;
+
+        /* padding: 8px 0; */
     }
 
     thead th {
@@ -58,6 +61,7 @@
     tbody tr:nth-of-type(2n) {
         background: #efefef;
     }
+
 
     tfoot td {
         border-top: 1px solid #efefef;
@@ -75,9 +79,11 @@
             <thead>
                 <tr>
                     <th>出借人</th>
+                                        <th>额度</th>
                     <th>起息日</th>
+                    <th>预还款日</th>
                     <th>还款日</th>
-                    <th>额度</th>
+
                     <th>今日计息</th>
                     <th>累积计息</th>
                 </tr>
@@ -87,17 +93,18 @@
                     <td>{{one.name | investorNameFilter}}</td>
                     <td>{{one.startDay}}</td>
                     <td>{{one.endDay}}</td>
+                    <td v-html="repayRender(one)"></td>
                     <td>*</td>
-                    <td>{{todayGains(one) | yuanFilter(4)}}</td>
-                    <td>{{totalGains(one) | yuanFilter(4)}}</td>
+                    <td>{{todayGains(one) | yuanFilter(3)}}</td>
+                    <td>{{totalGains(one) | yuanFilter(3)}}</td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr>
-                    <td :colspan="ui.table.cols/2">
+                    <td :colspan="3">
                         注：次日起息，实时计息
                     </td>
-                    <td :colspan="ui.table.cols/2" class="ta-r">
+                    <td :colspan="ui.table.cols-3" class="ta-r">
                         <i>via xuefeng 借款备忘录</i>
                     </td>
                 </tr>
@@ -112,16 +119,32 @@ const _AUTO_REFRESH_TIME = 1200;
 const _YEAR_RATE_STEP = [
     [0, 0.06]
 ];
+//还款状态
+const REPAY_STATUS={
+    noyet:-1,
+    paying:0,//部分偿还 约定为偿还当期全部利息和部分本金，后续利息应该按剩余本金计算
+    settled:1
+}
 const _INVESTORS = [{
     name: "QiGuoLi",
     money: 20000,
     startDay: "2018/09/01",
-    endDay: "2019/03/01"
+    endDay: "2019/03/01",
+    repay:{
+        time:"2018/11/06 14:34",
+        money:20219,
+        status:1
+    }
 }, {
     name: "YuJiuSheng",
     money: 20000,
     startDay: "2018/09/08",
-    endDay: "2019/03/08"
+    endDay: "2019/03/08",
+    repay:{
+        time:"2018/10/31 14:16",
+        money:20177,
+        status:1
+    }
 }, {
     name: "XiaoMingHuan",
     money: 30000,
@@ -170,7 +193,7 @@ const app = new Vue({
         investors: _INVESTORS,
         ui: {
             table: {
-                cols: 6
+                cols: 7
             }
         }
     },
@@ -191,8 +214,11 @@ const app = new Vue({
         //     })
     },
     filters: {
-        yuanFilter(num, fixed = 3) {
-            return num.toFixed(fixed);
+        yuanFilter(num, fixed = 3,zeroText="-") {
+            let result=num.toFixed(fixed)+'';
+            result=result.replace(/\.?0*$/,'');
+            result=result==0? zeroText :result;
+            return result;
         },
         percentageFilter(num) {
             return (num * 100).toFixed(0) + '%';
@@ -210,25 +236,49 @@ const app = new Vue({
             }, _AUTO_REFRESH_TIME);
         },
         todayGains(one) {
-            let baseMoney = one.money;
-            let nowDate = new Date(),
-                startDate = new Date(one.startDay);
-            let zeroPointDate = new Date(nowDate.toLocaleDateString());
-            let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
-            return money.getDateDiffGains(baseMoney, yearRate, zeroPointDate, nowDate);
+            //当日某个时间点结清的话 按理说 应该显示一个不动的当日计息
+            let gains=0,repay=one.repay;
+            if(repay && repay.status==REPAY_STATUS.settled){//历史已结清的
+                gains=0;
+            }else{
+                let baseMoney = one.money;
+                let nowDate = new Date(),
+                    startDate = new Date(one.startDay);
+                let zeroPointDate = new Date(nowDate.toLocaleDateString());
+                let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
+                gains=money.getDateDiffGains(baseMoney, yearRate, zeroPointDate, nowDate);
+            }
+
+            return gains;
         },
         totalGains(one) {
-            let baseMoney = one.money;
-            let nowDate = new Date(),
-                startDate = new Date(one.startDay);
-            let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
-            return money.getDateDiffGains(baseMoney, yearRate, startDate, nowDate);
+            let gains=0,repay=one.repay;
+            if(repay && repay.status==REPAY_STATUS.settled){//历史已结清的
+                gains=repay.money-one.money;
+            }else{
+                //未结过的
+                let baseMoney = one.money;
+                let nowDate = new Date(),
+                    startDate = new Date(one.startDay);
+                let yearRate = money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
+                gains=money.getDateDiffGains(baseMoney, yearRate, startDate, nowDate);
+            }
+
+            return gains;
         },
         /*
         计算当期年利率
          */
         calcYearRateByStartDay(startDay) {
             return money.getCurrentPeriodYearRate(new Date(startDay), _YEAR_RATE_STEP)
+        },
+        /**
+         * 还款时间渲染
+         */
+        repayRender(one,noneText="-"){
+            let html=one.repay?one.repay.time : noneText;
+            html=html.replace(" ","<br>")
+            return  html;
         }
     }
 

@@ -17,7 +17,7 @@ const money = {
     /**
      * 按借款长短 动态计算当前利息 一般场景下时间长的利息高
      * @param  {date object} startDate    日期对象
-     * @param  {步长阶梯利率的二维数组}  yearRateStep 格式为[[0,0.07],[90,0.08]]
+     * @param  {步长阶梯利率的二维数组}  yearRateStep 格式为[[0,0.06],[90,0.07]]
      * @return {number}              年化利息
      */
     getCurrentPeriodYearRate(startDate, yearRateStep = [
