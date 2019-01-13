@@ -100,7 +100,7 @@ http {
     #access_log  logs/access.log  main;
     #gzip  on;
     server {
-        listen 8000;
+        listen 8080;
         server_name localhost;
         #index  index.html index.htm;
         # root   html; #可以在location块中重写
@@ -116,7 +116,7 @@ http {
 
 ```
 
-- include servers/\*; 待会测试这个
+- include servers/\*; 需要测试这个 可以的话 拿这个做 demo 演示
 
 ## 块指令 - location
 
@@ -179,6 +179,7 @@ location ~* \.(gif|jpg|jpeg)$ {
 |   /images/1.gif   |       D       |
 | /documents/1.jpg  |       E       |
 |   /images/1.jpg   |       ?       |
+|      /other/      |       ?       |
 |    /documents     |       ?       |
 
 #### 一些特殊情况
@@ -192,23 +193,45 @@ location = / user {
 }
 ```
 
+### 反向代理相关指令
+
+配置反向代理，常用的两个指令为`proxy_pass`和`rewrite`。
+
 ### proxy_pass
-
-举例。
-http://127.0.0.1:4321/sohu/
-
-```
-location = /sohu/ {
-    proxy_pass http://www.sohu.com/;
-}
-```
-
-官方文档：
 
 ```
 Syntax:	proxy_pass URL;
 Default:	—
 Context:	location, if in location, limit_except
+```
+
+示例：
+
+```nginx
+#http://127.0.0.1:4321/sohu/
+location = /sohu/ {
+    proxy_pass http://www.sohu.com/;
+}
+```
+
+代理到新 server 地址，不改变浏览器地址栏 URL。
+根据 proxy_pass 的取值尾部是否带/，会出现两种不同的代理目的地。
+
+|   type    |                       描述                       |
+| :-------: | :----------------------------------------------: |
+|  with /   | 请求地址的匹配 path 部分， 会被替换为 proxy_pass |
+| without / |    请求地址的全部 path 会被追加到 proxy_pass     |
+
+示例：
+
+```nginx
+#http://127.0.0.1:4321/with/15
+location = /with/ {
+    proxy_pass http://m.sohu.com/ch/;
+}
+location = /without/ {
+    proxy_pass http://m.sohu.com/ch;
+}
 ```
 
 ### rewrite
