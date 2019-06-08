@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,minimum-scale=1,maximum-scale=1,user-scalable=no"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <title>❤️犇犇</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th,
+      td {
+        text-align: center;
+        font-size: 13px;
+        padding: 5px 0;
+      }
+
+      th {
+        background: #ccc;
+        font-size: 14px;
+        /* font-size: 14px; */
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <table>
+        <thead>
+          <tr>
+            <th>期数</th>
+            <th>起息日</th>
+            <!-- <th>退出时间</th> -->
+            <th>利率</th>
+            <th>额度</th>
+            <th>今日计息</th>
+            <th>累积计息</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(one, index) in investors">
+            <td>{{ index + 1 }}</td>
+            <td>{{ one.startDay }}</td>
+            <!-- <td>{{one.endDay}}</td> -->
+            <td>
+              {{ calcYearRateByStartDay(one.startDay) | percentageFilter }}
+            </td>
+            <td>{{ one.money }}</td>
+            <td>{{todayGains(one) | yuanFilter(2)}}</td>
+            <td>{{totalGains(one) | yuanFilter(2)}}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="4"></td>
+            <td>本息总计:</td>
+            <td>{{globalPrincipalAndInterest | yuanFilter(2)}}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </body>
+  <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
+  <script type="module" type="text/javascript">
+    import money from "./utils/money.js";
+
+    const _YEAR_RATE_STEP = [[0, 0.07], [90, 0.08]];
+
+    const _INVESTORS = [
+      {
+        money: 50000,
+        startDay: "2018/03/22",
+        endDay: "-"
+      },
+      {
+        money: 20000,
+        startDay: "2018/05/11",
+        endDay: "-"
+      },
+      {
+        money: 100000,
+        startDay: "2018/05/17",
+        endDay: "-"
+      },
+      {
+        money: 40000,
+        startDay: "2018/06/12",
+        endDay: "-"
+      },
+      {
+        money: 50000,
+        startDay: "2018/07/12",
+        endDay: "-"
+      }
+    ];
+
+    const app = new Vue({
+      el: "#app",
+      data: {
+        investors: _INVESTORS
+      },
+      computed: {
+        //全部本息合计
+        globalPrincipalAndInterest() {
+          return this.investors.reduce((num, one) => {
+            return num + this.totalGains(one) + one.money;
+          }, 0);
+        }
+      },
+      created() {
+        this.gainsAutoRefresh();
+      },
+      filters: {
+        yuanFilter(num, fixed = 3) {
+          return num.toFixed(fixed);
+        },
+        percentageFilter(num) {
+          return (num * 100).toFixed(0) + "%";
+        }
+      },
+      methods: {
+        gainsAutoRefresh() {
+          setInterval(x => {
+            this.investors.splice(0, _INVESTORS.length, ..._INVESTORS);
+          }, 2000);
+        },
+        todayGains(one) {
+          let baseMoney = one.money;
+          let nowDate = new Date(),
+            startDate = new Date(one.startDay);
+          let zeroPointDate = new Date(nowDate.toLocaleDateString());
+          let yearRate = money.getCurrentPeriodYearRate(
+            startDate,
+            _YEAR_RATE_STEP
+          );
+          return money.getDateDiffGains(
+            baseMoney,
+            yearRate,
+            zeroPointDate,
+            nowDate
+          );
+        },
+        totalGains(one) {
+          let baseMoney = one.money;
+          let nowDate = new Date(),
+            startDate = new Date(one.startDay);
+          let yearRate = money.getCurrentPeriodYearRate(
+            startDate,
+            _YEAR_RATE_STEP
+          );
+          return money.getDateDiffGains(
+            baseMoney,
+            yearRate,
+            startDate,
+            nowDate
+          );
+        },
+        /*
+        计算当期年利率
+         */
+        calcYearRateByStartDay(startDay) {
+          return money.getCurrentPeriodYearRate(
+            new Date(startDay),
+            _YEAR_RATE_STEP
+          );
+        }
+      }
+    });
+  </script>
+</html>

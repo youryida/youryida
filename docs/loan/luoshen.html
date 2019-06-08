@@ -7,7 +7,7 @@
       content="width=device-width,minimum-scale=1,maximum-scale=1,user-scalable=no"
     />
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
-    <title>助力北漂❤️感恩有你</title>
+    <title>以爱之名❤️携手同行</title>
     <style>
       * {
         margin: 0;
@@ -88,8 +88,8 @@
             <td>{{ one.startDay }}</td>
             <td>{{ one.endDay }}</td>
             <td v-html="repayRender(one)"></td>
-            <td>{{todayGains(one) | yuanFilter(3,"已结清")}}</td>
-            <td>{{totalGains(one) | yuanFilter(3)}}</td>
+            <td>{{todayGains(one) | yuanFilter(4,"已结清")}}</td>
+            <td>{{totalGains(one) | yuanFilter(4)}}</td>
           </tr>
         </tbody>
         <tfoot>
@@ -105,8 +105,8 @@
   </body>
   <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
   <script type="module">
-    import money from "./assets/js/money.js";
-    const _AUTO_REFRESH_TIME = 1200;
+    import money from "./utils/money.js";
+    const _AUTO_REFRESH_TIME = 1000;
     const _YEAR_RATE_STEP = [[0, 0.06]];
     //还款状态
     const REPAY_STATUS = {
@@ -116,190 +116,10 @@
     };
     const _INVESTORS = [
       {
-        name: "QiGuoLi",
-        money: 20000,
-        startDay: "2018/09/01",
-        endDay: "2019/03/01",
-        repay: {
-          time: "2018/11/06 14:34",
-          money: 20219,
-          status: 1,
-          way: "招商-招商"
-        }
-      },
-      {
-        name: "YuJiuSheng",
-        money: 20000,
-        startDay: "2018/09/08",
-        endDay: "2019/03/08",
-        repay: {
-          time: "2018/10/31 14:16",
-          money: 20177,
-          status: 1,
-          way: "招商-招商"
-        }
-      },
-      {
-        name: "ZhaoFuYang",
-        money: 10000,
-        startDay: "2018/09/18",
-        endDay: "2019/09/18",
-        repay: {
-          time: "2018/11/20 17:40",
-          money: 10105,
-          status: 1,
-          way: "招商-交通"
-        }
-      },
-      {
-        name: "LiangDaoBai",
-        money: 10000,
-        startDay: "2018/09/29",
-        endDay: "2019/09/29",
-        repay: {
-          time: "2018/11/20 17:27",
-          money: 10087,
-          status: 1,
-          way: "招商-宁夏"
-        }
-      },
-      {
-        name: "ZhangShuai",
-        money: 92000,
-        startDay: "2018/10/01",
-        endDay: "2019/10/01",
-        repay: {
-          time: "2018/11/07 14:16",
-          money: 92569,
-          status: 1,
-          way: "工商-招商"
-        }
-      },
-      {
-        name: "ZhangShuai",
-        money: 8000,
-        startDay: "2018/10/01",
-        endDay: "2019/10/01",
-        repay: {
-          time: "2018/11/27 14:50",
-          money: 8076,
-          status: 1,
-          way: "招商-招商"
-        }
-      },
-      {
-        name: "LiJiKun",
-        money: 30000,
-        startDay: "2018/10/08",
-        endDay: "2019/10/08",
-        repay: {
-          time: "2018/12/24 16:20",
-          money: 30384,
-          status: 1,
-          way: "支付宝-支付宝"
-        }
-      },
-      {
-        name: "TuKe",
-        money: 40000,
-        startDay: "2018/10/09",
-        endDay: "2020/10/09",
-        repay: {
-          time: "2019/01/16 10:48",
-          money: 40654,
-          status: 1,
-          way: "招商-支付宝"
-        }
-      },
-      {
-        name: "TuhaoA",
-        money: 50000,
-        startDay: "2018/10/10",
-        endDay: "2018/12/10",
-        repay: {
-          time: "2018/11/27 14:54",
-          money: 50400,
-          status: 1,
-          way: "招商-招商"
-        }
-      },
-      {
-        name: "TuhaoA",
-        money: 150000,
-        startDay: "2018/10/10",
-        endDay: "2018/12/10",
-        repay: {
-          time: "2019/01/11 21:42",
-          money: 152316,
-          status: 1,
-          way: "招商-招商"
-        }
-      },
-      {
-        name: "FengYinChao",
-        money: 50000,
-        startDay: "2018/10/16",
-        endDay: "2019/10/16",
-        repay: {
-          time: "2019/01/16 10:58",
-          money: 50760,
-          status: 1,
-          way: "招商-招商/支付宝"
-        }
-      },
-      {
-        name: "ZhaoLanYing",
-        money: 30000,
-        startDay: "2018/09/09",
-        endDay: "2019/09/09"
-      },
-      {
-        name: "ZhaoLanYing",
-        money: 133000,
-        startDay: "2018/10/20",
-        endDay: "2020/10/20"
-      },
-      {
-        name: "LiuQingGuang",
+        name: "ZhaoMing",
         money: 70000,
-        startDay: "2018/10/20",
-        endDay: "2020/10/20"
-      },
-      {
-        name: "LiuFengXiang",
-        money: 20000,
-        startDay: "2018/10/20",
-        endDay: "2020/10/20"
-      },
-      {
-        name: "LiuQing",
-        money: 97000,
-        startDay: "2018/10/20",
-        endDay: "2020/10/20",
-        repay: {
-          time: "2019/01/16 10:40",
-          money: 98411,
-          status: 1,
-          way: "招商-中行" //to广运 不收息 得折算礼物了 1411
-        }
-      },
-      {
-        name: "LiuQingZhi",
-        money: 10000,
-        startDay: "2018/10/20",
-        endDay: "2020/10/20",
-        repay: {
-          time: "2019/01/16 21:09",
-          money: 10146,
-          status: 1,
-          way: "招商-山东农信社" //不收息 得折算礼物了 146
-        }
-      },
-      {
-        name: "LiuHuiJie",
-        money: 60000,
-        startDay: "2018/10/23",
-        endDay: "2020/10/23"
+        startDay: "2019/06/07",
+        endDay: "2020/06/07"
       }
     ];
 
@@ -313,21 +133,9 @@
           }
         }
       },
-      computed: {
-        // totalCounts() {
-        //     return this.weatherList.reduce((count, w) => {
-        //         return count + w.aqi;
-        //     }, 0);
-        // }
-      },
+      computed: {},
       created() {
         this.gainsAutoRefresh();
-        // fetch('http://cs.cdn.sohusce.com/test/weatherData.json')
-        //     .then(res => res.json())
-        //     .then(json => {
-        //         // console.log(json.data)
-        //         this.weatherList = json.data.forecast;
-        //     })
       },
       filters: {
         yuanFilter(num, fixed = 3, zeroText = "-") {
