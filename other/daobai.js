@@ -1,3 +1,7 @@
+// http://app.7children.cn:8090/voaBack/wap/bm/index.jsp
+// ios10.1.1-weixin  375 600
+// Mozilla/5.0 (iPhone; CPU iPhone OS 10_1_1 like Mac OS X; en-us) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 MicroMessenger/5.2.3 BuildCode/95
+
 var ftoken = location.href.match(/app\/bm\/(.+?)\//)[1];
 var fschoolId = location.href.match(/schoolId=(\d+)/)[1];
 var fparentPhone = 13619598908;
