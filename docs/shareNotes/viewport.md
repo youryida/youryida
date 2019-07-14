@@ -84,12 +84,27 @@ _注：移动设备的显著特点是屏幕小，考虑到人类的水平阅读�
 
 对于使用媒体查询技术(Media queries)对窄屏进行优化的页面，3.1 所述的方案显得更加不合理了。因为，如果视口宽度初始为 980px，那么浏览器便不会以 640px、480px 或更低分辨率来启动对应的媒体查询，从而限制了这类查询机制的有效性。
 
-为了解决这个问题，Apple 在 iOS Safari 中首先引入了“viewport meta tag”，允许 Web 开发人员定制视口的大小和比例（约 2014 年）。
+为了解决这个问题，Apple 在 iOS Safari 中首先引入了`viewport meta tag`，允许 Web 开发人员[定制视口](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html)的大小和比例（约 2014 年）。
 
+虽然，后续其他的移动浏览器也都支持了此标记，但是 W3C 并未将此列入标准。（这并不影响我们使用它）
+
+_从目前 W3C 的草案规范来看，他希望按如下方式在 css 中声明 viewport，而不是在\<meta\>中。更多相关细节，可以参考下面链接，本文不作更多讨论。_
+
+```css
+@viewport {
+  width: device-width;
+}
 ```
-虽然，后续其他的移动浏览器也都支持了此标记，但是W3C并未将此列入标准。（细节较多，此文不作展开）
-参考：https://drafts.csswg.org/css-device-adapt/#the-viewport
-```
+
+> 参考：
+>
+> - https://drafts.csswg.org/css-device-adapt/#the-viewport
+> - https://developer.mozilla.org/en-US/docs/Web/CSS/@viewport
+
+4. 移动 Web 开发中 viewport 的使用
+
+safari
+https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html
 
 ### 2.4 Visual Viewport 和 Layout Viewport
 
