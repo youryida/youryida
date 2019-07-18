@@ -4,7 +4,7 @@
 
 ## 1. 引言
 
-移动端开发中，有一个躲避不掉的 HTML meta 声明 `<meta viewport>`。通常被用来做跨屏适配，常见声明如下：
+移动端开发中，有一个躲避不掉的 HTML meta 声明 `<meta name="viewport">`。通常被用来做跨屏适配，常见声明如下：
 
 ```html
 <meta
@@ -88,7 +88,7 @@ _注：移动设备的显著特点是屏幕小，考虑到人类的水平阅读�
 
 虽然，后续其他的移动浏览器也都支持了此标记，但是 W3C 并未将此列入标准。（这并不影响我们使用它）
 
-_从目前 W3C 的草案规范来看，他希望按如下方式在 css 中声明 viewport，而不是在\<meta\>中。更多相关细节，可以参考下面链接，本文不作更多讨论。_
+_从目前 W3C 的草案规范来看，他希望按如下方式在 css 中声明 viewport，而不是在\<meta\>中。_
 
 ```css
 @viewport {
@@ -96,12 +96,38 @@ _从目前 W3C 的草案规范来看，他希望按如下方式在 css 中声明
 }
 ```
 
+_W3C 草案中的获取视口宽度 API 为：_
+
+```javascript
+window.visualViewport.width;
+```
+
+_更多相关细节，可以参考下面链接，本文不作更多讨论。_
+
 > 参考：
 >
 > - https://drafts.csswg.org/css-device-adapt/#the-viewport
 > - https://developer.mozilla.org/en-US/docs/Web/CSS/@viewport
+> - https://developer.mozilla.org/en-US/docs/Web/API/VisualViewport
 
-4. 移动 Web 开发中 viewport 的使用
+## 4. Viewport Meta Tag 的使用
+
+由 iOS 的 safari 率先引入的`Viewport Meta Tag`声明，在 2014 年左右就被各大主流移动浏览器厂商所支持，我们可以在 Apple 或者 MDN 的开发者文档中查看具体用法说明。
+
+需要注意的一点是，目前**只有移动端的浏览器**支持这一声明方式，**PC 上是无效的**。
+
+_在那些难以界定移动还是 PC 的设备中，这种区分可能会存在一些问题，有一些 Web 组织，如 WICG(Web Platform Incubator Community Group)目前在尝试推动解决这个问题。这里不做更多讨论。（参考：https://github.com/WICG/visual-viewport）_
+
+### 4.1 可选值说明
+
+| Value         | Possible subvalues                 | Description                                                                          |
+| ------------- | ---------------------------------- | ------------------------------------------------------------------------------------ |
+| width         | 一个正整数或者字符串  device-width | 以 pixels（像素）为单位， 定义 viewport（视口）的宽度。                              |
+| height        | 一个正整数或者字符串 device-height | 以 pixels（像素）为单位， 定义 viewport（视口）的高度。                              |
+| initial-scale | 一个 0.0  到 10.0 之间的正数       | 定义设备宽度（纵向模式下的设备宽度或横向模式下的设备高度）与视口大小之间的缩放比率。 |
+| maximum-scale | 一个 0.0  到 10.0 之间的正数       | 定义缩放的最大值；它必须大于或等于 minimum-scale 的值，不然会导致不确定的行为发生。  |
+| minimum-scale | 一个 0.0  到 10.0 之间的正数       | 定义缩放的最小值；它必须小于或等于 maximum-scale 的值，不然会导致不确定的行为发生。  |
+| user-scalable | 一个布尔值（yes 或者 no）          | 如果设置为  no，用户将不能放大或缩小网页。默认值为  yes。                            |
 
 safari
 https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html
