@@ -1,6 +1,6 @@
 [TOC]
 
-# Web 前端开发中的 viewport 与移动端适配
+# Web 开发中的 viewport 与移动端适配
 
 ## 1. 引言
 
@@ -33,11 +33,11 @@
 
 逻辑关系简单清晰。
 
-此处插入问题 1：浏览器中，对页面进行放大的时候，视口的大小如何变化？
+此处插入一个问题：浏览器中，对页面进行放大的时候，视口的大小如何变化？
 
 ### 2.2 viewport 的缩放与平移
 
-回答问题 1，视口会变小。
+回答 2.1 中的问题，视口会变小。
 
 因为，浏览器窗口中所浏览图像的放大，是依赖于视口的缩小来实现的。
 
@@ -73,6 +73,8 @@
 _注：有的文章将 Visual Viewport 译作“视觉视口”，个人认为其语义感不如“可视视口”。_
 
 我们上面一直描述的视口，即为此处的“可视视口”——**可**在窗口中显示的区域。而“布局视口”则指的就是 2.1 白话描述中的画布。
+
+_有人针对这两个概念做了一个 demo，参见：http://bokand.github.io/viewport/index.html_
 
 下面如果不做特别说明，视口，依然指的是“可视视口”。
 
@@ -128,7 +130,7 @@ _更多相关细节，可以参考下面链接，本文不作更多讨论。_
 
 ## 4. Viewport Meta Tag 的使用
 
-由 iOS 的 safari 率先引入的`Viewport Meta Tag`声明，在 2014 年左右就被各大主流移动浏览器厂商所支持，我们可以在 Apple 或者 MDN 的开发者文档中查看具体用法说明。
+由 iOS 的 Safari 率先引入的`Viewport Meta Tag`声明，在 2014 年左右就被各大主流移动浏览器厂商所支持，我们可以在 Apple 或者 MDN 的开发者文档中查看具体用法说明。
 
 需要注意的一点是，目前**只有移动端的浏览器**支持这一声明方式，**PC 上是无效的**。
 
@@ -138,24 +140,34 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 
 `<meta name="viewport">`支持多个属性取值，如下表：
 
-| Value         | Possible subvalues                 | Description                                                                          |
-| ------------- | ---------------------------------- | ------------------------------------------------------------------------------------ |
-| width         | 一个正整数或者字符串 device-width  | 以 pixels（像素）为单位， 定义视口的宽度。                                           |
-| height        | 一个正整数或者字符串 device-height | 以 pixels（像素）为单位， 定义视口的高度。                                           |
-| initial-scale | 一个 0.0  到 10.0 之间的正数       | 定义设备宽度（纵向模式下的设备宽度或横向模式下的设备高度）与视口大小之间的缩放比率。 |
-| maximum-scale | 一个 0.0  到 10.0 之间的正数       | 定义缩放的最大值；它必须大于或等于 minimum-scale 的值，不然会导致不确定的行为发生。  |
-| minimum-scale | 一个 0.0  到 10.0 之间的正数       | 定义缩放的最小值；它必须小于或等于 maximum-scale 的值，不然会导致不确定的行为发生。  |
-| user-scalable | 一个布尔值（yes 或者 no）          | 如果设置为  no，用户将不能放大或缩小网页。默认值为  yes。                            |
+| Value         | Possible subvalues             | Description                                                                     |
+| ------------- | ------------------------------ | ------------------------------------------------------------------------------- |
+| width         | 正整数或者字符串 device-width  | 视口宽度(px)。                                                                  |
+| height        | 正整数或者字符串 device-height | 视口高度(px)。                                                                  |
+| initial-scale | 正数                           | 设备宽度(device-width)与视口宽度的初始缩放比值。                                |
+| maximum-scale | 正数                           | 缩放的最大值；它必须大于或等于 minimum-scale 的值，不然会导致不确定的行为发生。 |
+| minimum-scale | 正数                           | 缩放的最小值；它必须小于或等于 maximum-scale 的值，不然会导致不确定的行为发生。 |
+| user-scalable | yes/no                         | 是否允许用户缩放。默认值为  yes。                                               |
 
 ### 4.2 viewport 属性举例
 
-我们以`iPhone6`手机+`safari`浏览器举例，对上述属性做详细说明。
+我们以`iPhone6s`手机+`Safari`浏览器举例，对上述属性做详细说明。如未做特殊说明，均**只讨论竖屏模式**。
 
 设备参数说明：
 
+- 操作系统：iOS 12.3.1
 - 屏幕物理分辨率：750\*1334
 - 屏幕逻辑分辨率：375\*667 (screen.width/height)
+- 设备像素比(dpr)：2 (window.devicePixelRatio)
 - 浏览器默认视口宽度：980 (window.innerWidth)
+
+> 关于 dpr
+>
+> 大家常说的两倍屏、三倍屏，这里面的倍数指的就是 dpr，即单一方向上，设备像素的点数/逻辑像素的点数。
+>
+> - Web 开发中操作的 px，指的是逻辑像素。由于现代手机屏幕物理发光点的排布越来越密集，逻辑上的 1px 也并非对应屏幕上的 1 个发光点。两倍屏的 1px 对应的是 2\*2=4 个物理点。
+> - 移动设备厂商，根据自己的屏幕像素密度，设定了一个 dpr，以便相同数量的逻辑像素在物理世界看起来的大小差不多。以 iPhone6s 举例，59mm 的屏幕宽度上排布了 750 个发光点，如果 dpr 为 1，那换算下来，PC 视觉上比较舒服的 14px 宽的字体，在手机上显示的物理宽度为 59/750\*14=1.1mm，完全看不见的。
+> - 至于，为什么 iPhone6S 的 dpr 选择了 2 而不是 2.5 或者 3，这里不做具体讨论了。
 
 #### 4.2.1 width
 
@@ -173,6 +185,12 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 - window.innerWidth 输出 375
 - div 宽度 375px 时，横向刚好铺满屏幕，超过出现横向滚动条
 
+```
+多数移动端viewport相关的文章，都推荐设置视口宽度"width=device-width"，<br>
+因为这样可以利用移动设备厂商调校好的dpr，使得同一大小的逻辑像素描述，在物理世界的不同屏幕上都能显示得大小刚刚好。<br>
+描述待整理。。。
+```
+
 #### 4.2.2 initial-scale
 
 ```html
@@ -187,6 +205,138 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 
 - window.innerWidth 输出 188 (375/2)
 - div 宽度 188px 时，横向刚好铺满屏幕，超过出现横向滚动条
+
+此处插入一个问题：
+不做任何 viewport 设置情况下，默认 initial-scale 的值为多少？
+
+#### 4.2.3 maximum-scale / minimum-scale
+
+```html
+<meta
+  name="viewport"
+  content="initial-scale=2,minimum-scale=1,maximum-scale=3"
+/>
+```
+
+预期页面初始 1 倍，最小可以缩小到 0.5 倍，最大放大到 2 倍。但是实际表现并非如此：
+
+- 小米 9 的系统浏览器表现符合预期
+- iOS 中 所有 Web 容器均无法缩放 到 比 initial-scale 更小的倍数，即使 minimum-scale 声明了一个更小且合理的取值
+- iOS 微信(7.0.5)的 webview 中，遵守了最大 3 倍声明，但 Safari 可以放大到比 3 倍更高的倍数
+
+_iOS10 开始，为了提高网页在 Safari 中的可访问性，Safari 限制了最小倍数(minimum-scale)并忽略了 最大倍数(maximum-scale) 的声明_
+
+Android 和 iOS 在不同版本不同厂商的 Web 容器中，缩放相关属性的表现可能存在较大程度的不一致，请谨慎使用。
+
+#### 4.2.4 user-scalable
+
+```html
+<meta name="viewport" content="user-scalable=no" />
+```
+
+- Safari 中依然无法缩小可以放大，微信中无法缩放
+- Android 未做测试
+
+同 4.2.3，缩放相关属性存在兼容问题，请谨慎使用
+
+#### 4.2.5 width 和 initial-scale 的取值冲突
+
+```
+首先回答一下 4.2.2 中的问题，默认情况下视口的宽度为 980px，设备宽度(device-width)为 375，所以，默认的 initial-scale 为 375/980= 0.38265
+```
+
+同理，"width=device-width" 和 "initial-scale=1" 也是等效的。（device-width 对应数值在竖屏模式下为 375，横屏模式下为 667）
+
+既然，两个属性的作用都是设置初始视口大小，那同时设置且存在冲突的情况下，浏览器会怎么处理呢？优先级规则是按书写顺序还是宽度大小？比如下面这样：
+
+```html
+<meta name="viewport" content="width=device-width,initial-scale=2" />
+```
+
+Safari 的运行结果是"initial-scale"的优先级更高，但是这样的对比研究**并没有任何意义**。因为并没有相应的规范约束这件事情，浏览器的兼容表现肯定是千差万别。
+
+作为开发者，我们要做的，就是避免冲突。要么只写一个，要么两个都计算正确。从语义表达角度看，**建议只设置"width"**。
+
+## 5. 多屏适配方案中的 viewport
+
+### 5.1 常见适配需求/方案
+
+多屏适配的需求，常见有两类：
+
+1. 响应式（布局伸缩或流动，文字图片等内容梯级缩放）
+2. 缩放式（布局和内容完全等比例缩放）
+
+_注：也可以说还有第三种，就是以上两种方式的组合，这里不做更多讨论_
+
+对应的技术方案一般也是对视口(viewport)、媒体查询(media queries)、单位(px/%/rem/vw)的组合使用。
+
+#### 5.1.1 响应式适配
+
+响应式适配需求，可以说是一套代码需要适配所有大小的屏幕，常见于 PC 和移动端共用一套代码的场景。这类需求在移动互联网的早期比较流行，典型的 Web 站点如[BootStrap](http://bootstrap.evget.com/getting-started.html)。浏览这类站点时，随着屏幕的缩小，你会看到页面模块的布局结构、主体内容的大小一直在做梯级变化。
+
+其技术方案方案一般是：
+
+- 设置 viewport 宽度为 device-width 以实现同样 px 大小约束下不同屏幕视觉大小的一致性
+- 布局容器的宽度使用`%`以实现伸缩
+- 定位排列使用`float/flex/inline-block`等以实现流动
+- 使用媒体查询按照一定的梯级范围给各种屏幕定制页面模块的布局、字号图片的大小，以实现视觉上舒适的梯级变化
+
+注：
+请注意区分媒体查询中的`min-device-width`和`min-width`，前者依据的是设备宽度(screen.width)，后者依据的是视口宽度(window.innerWidth)。
+
+#### 5.1.2 缩放式适配
+
+缩放式适配需求，即按照屏幕宽度，在不同的屏幕上满屏等比例缩放展示。简单描述，就像一张固定长宽比，且横向总是铺满屏幕的图片，大屏显示的大，小屏显示的小。
+
+移动互联网发展到一定阶段之后，越来越多的开发者意识到响应式适配的复杂性和局限性，开始针对特定屏幕设计固定的 UI，绝大多数数移动端产品都有了区分于 PC 的专门的`m站`。
+
+这类业务场景中，运行环境都是便携式的手机，屏幕宽度差距都不大，UI 适配上，可以一把梭只做缩放式适配了。
+
+其**早期技术方案**一般是：
+
+- 设置 viewport 宽度为 device-width 或其他固定值 (可选项)
+- css 单位使用 rem，js 根据 screen.width 以及 css 中 rem 的换算系数，动态计算并设置 html 根节点 font-size，以实现整个页面内容的等比例缩放
+
+_github 中近 1 万 star 的 js 库`amfe-flexible`便是采用的此方案。_
+注：这个方案解决 1px 细线的方案是？
+https://www.w3cplus.com/mobile/lib-flexible-for-html5-layout.html
+
+```javascript
+if (dpr >= 2) {
+  var fakeBody = document.createElement("body");
+  var testElement = document.createElement("div");
+  testElement.style.border = ".5px solid transparent";
+  fakeBody.appendChild(testElement);
+  docEl.appendChild(fakeBody);
+  if (testElement.offsetHeight === 1) {
+    docEl.classList.add("hairlines");
+  }
+  docEl.removeChild(fakeBody);
+}
+```
+
+这个方案中有两个常见问题：
+
+1. dpr>1 的屏幕，如何实现 1px 细线
+2. 如何避免 rem 单位取值为多位小数点时，不同浏览器表现出的渲染差异
+
+这两个问题引出了两个关键点：
+
+- viewport 的 width 的最优值是多少？
+- css 的 rem 书写转换系数的最优值是多少？
+
+继续抛出一个问题：
+rem 方案中，不考虑 1px 细线问题的话，是否可以不设置 viewport？
+
+**后期技术方案**
+
+vw/vh/vmin/vmax
+
+待整理。。
+
+---
+
+---
 
 # 下为草稿
 
