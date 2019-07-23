@@ -255,20 +255,26 @@ Safari 的运行结果是"initial-scale"的优先级更高，但是这样的对�
 
 ## 5. 多屏适配方案中的 viewport
 
-### 5.1 常见适配需求/方案
-
-多屏适配的需求，常见有三类：
+多屏适配的需求，常见主要有两类：
 
 1. 响应式（布局伸缩或流动，内容大小梯级变化）
 2. 等比缩放式（布局和内容完全等比例缩放）
 
+_注：实际业务中的适配需求可能是混搭的，这里为了方便做技术阐述只讨论此两类_
+
 对应的技术方案一般也是对视口(viewport)、媒体查询(media queries)、单位(px/%/rem/vw)的组合使用。
 
-#### 5.1.1 响应式
+### 5.1 响应式适配
 
-响应式适配需求，可以说是一套代码需要适配所有大小的屏幕，常见于 PC 和移动端共用一套代码的场景。这类需求在移动互联网的早期比较流行，典型的 Web 站点如`GitHub`。浏览这类站点时，随着屏幕的缩小，你会看到页面模块的布局结构（流动或显隐）、文字图片等主体内容的大小一直在做梯级变化。
+#### 5.1.1 需求描述
 
-其技术方案方案一般是：
+响应式适配需求，可以说是一套代码需要适配所有大小的屏幕，常见于 PC 和移动端共用一套代码的场景。典型的 Web 站点如`GitHub`。浏览这类站点时，随着屏幕的缩小，你会看到页面模块的布局结构在伸缩、流动或显隐变化，文字图片等主体内容在布局容器内流动填充、其大小也一直在做梯级变化。
+
+![github响应式表现图](./assets/viewport/github-demo.gif)
+
+#### 5.1.2 技术方案
+
+技术方案一般是下面几种方式的组合使用：
 
 - 设置 viewport 宽度为 device-width 以实现同样 px 大小约束下不同屏幕（或者横竖屏切换）视觉大小的一致性
 - 布局容器的宽度使用`%`以实现伸缩
@@ -278,48 +284,51 @@ Safari 的运行结果是"initial-scale"的优先级更高，但是这样的对�
 注：
 媒体查询请注意区分`@media screen and (xxx){}`中的`min-device-width`和`min-width`，前者依据的是设备宽度(screen.width)，后者依据的是视口宽度(window.innerWidth)。
 
-#### 5.1.2 等比缩放式
+### 5.2 等比缩放式适配
 
-缩放式适配需求，即按照屏幕宽度，在不同的屏幕上满屏等比例缩放展示。简单描述，就像一张固定长宽比，且横向总是铺满屏幕的图片，大屏显示的大，小屏显示的小。
+#### 5.2.1 需求描述
+
+缩放式适配需求，即按照屏幕宽度，在不同的屏幕上满屏等比例缩放展示。简单描述，就像一张固定长宽比，且横向总是铺满屏幕的图片，宽屏显示的大，窄屏显示的小。
 
 移动互联网发展到一定阶段之后，越来越多的开发者意识到响应式适配的复杂性和局限性，开始针对特定屏幕设计固定的 UI，绝大多数数移动端产品都有了区分于 PC 的专门的`m站`。
 
 这类业务场景中，运行环境都是便携式的手机，屏幕宽度差距都不大，UI 适配上，可以一把梭只做缩放式适配了。
 
-其**早期技术方案**一般是：
+_注：Pad 设备虽然也是移动设备，但是因为屏幕足够宽了，所以现在多数产品（如某宝）的方案都是访问 PC 站点了。_
 
-- 设置 viewport 宽度为 device-width 或其他固定值
-- css 单位使用 rem，js 根据 screen.width 以及 css 中 rem 的换算系数，动态计算并设置 html 根节点 font-size，以实现整个页面内容的等比例缩放
+#### 5.2.2 技术方案 - rem
 
-> 横向满屏 rem 的个数=标注稿满屏宽度/1rem 所占 px 数=设备逻辑宽度/根节点的 fontSize 。
+`rem`是 CSS3 新增的相对于根元素 html 的 font-size 计算值的大小的倍数单位。早期的移动端等比缩放的适配方案都是基于 rem。
+
+- 设置 viewport 宽度为 device-width 或其他固定值，以得到 px 为单位的文字或边线等的期望效果
+- css 单位使用 rem，js 根据 viewport 宽度以及 css 中 rem 的换算系数，动态计算并设置 html 根节点 font-size，以实现整个页面内容的等比例缩放
+
+_注：一些文本段落展示类的需求，不希望做等比缩放适配，希望宽屏比窄屏在一行内可以展示更多的文字。这时就需要引入媒体查询，并且对字号使用 px 单位做特殊处理。_
+
+> rem 为基础的动态适配方案
 >
-> 假设横向铺满屏幕我们定为 n 个 rem，那么：
+> 设：横向满屏的 rem 个数预定为 remCount，标注稿总宽度 px 为 uiWidth，标注稿内某元素宽度为 uiEleWidth。
 >
-> - CSS 中某元素 rem 的值 = 元素的标注 px 值/(标注稿宽度/n)
-> - JS 中根节点的 fontSize = screen.width/n
+> 那么：
+>
+> - 设计稿中 1rem 表示的 px 数 uiPX1rem = uiWidth/remCount
+> - CSS 中某元素 rem 的值 cssEleWidth= uiEleWidth/uiPX1rem
+> - JS 中根节点的 fontSize = window.innerWidth/remCount
 
-_github 中近 1 万 star 的 js 库`amfe-flexible`便是采用的此方案。_
-注：这个方案解决 1px 细线的方案是？
-https://www.w3cplus.com/mobile/lib-flexible-for-html5-layout.html
+_github 中近 1 万 star 的 js 库`lib-flexible`便是采用的此方案。_
 
-```javascript
-if (dpr >= 2) {
-  var fakeBody = document.createElement("body");
-  var testElement = document.createElement("div");
-  testElement.style.border = ".5px solid transparent";
-  fakeBody.appendChild(testElement);
-  docEl.appendChild(fakeBody);
-  if (testElement.offsetHeight === 1) {
-    docEl.classList.add("hairlines");
-  }
-  docEl.removeChild(fakeBody);
-}
-```
+#### 5.2.3 技术方案 - viewport units
 
-这个方案中有两个常见问题：
+iOS8+/Android4.4+ 开始支持了新的单位——viewport units（视口单位）。包括：vw/vh/vmin/vmax。
 
-1. dpr>1 的屏幕，如何实现 1px 细线
-2. 如何避免 rem 单位取值为多位小数点时，不同浏览器表现出的渲染差异
+1vw 即表示当前视口宽度的 1%，我们可以利用这一点替代“rem+根节点 font-size”的等比缩放适配方案。
+
+举个例子，750px 的 UI 稿中，宽度 75px 的按钮，在 css 中的宽度描述即为：`width:1vw`。
+
+这个方案中有两个常见问题点：
+
+1. dpr>1 的屏幕，viewport 宽度为 device-width 时，如何实现 1 个物理像素粗的细线
+2. 如何避免渲染 rem 单位的元素宽高、字号等样式时，因为计算出的 px 出现了多位小数点，而引起的跨浏览器渲染差异问题
 
 这两个问题引出了两个关键点：
 
