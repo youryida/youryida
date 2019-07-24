@@ -397,12 +397,12 @@ _注：Android 的 webview 默认未开启 meta viewport 支持，需要手动�
 
 1. 0.5px 方案
 
-iOS8+ 支持了 0.5px，但是安卓未支持
+   iOS8+ 支持了 0.5px，但是 Android 未支持
 
 2. 奇技淫巧方案
 
-设置 background、border-image、box-shadow、transform 等方案来曲线实现
+   设置 background、border-image、box-shadow、transform 等方案来曲线实现
 
 3. viewport 方案
 
-设置 viewport 宽度为`dpr*device-width`
+   设置 viewport 宽度为`dpr*device-width`，然后 css 设置 `height:1px;`。最佳方案，但是需要注意对项目中 px 单位描述的内容的影响。
