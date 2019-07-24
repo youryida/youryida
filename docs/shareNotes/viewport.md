@@ -355,7 +355,7 @@ _github 中近 1 万 star 的 js 库`lib-flexible`便是采用的此方案。_
 这里插入两个问题：
 
 1. 本 rem 方案中，是否可以不设置 viewport 的宽度？
-2. dpr 为 2 的设备中，2 倍 UI 稿中标注的 1px 粗的细线，应该如何实现？
+2. dpr 为 2 的设备中，2 倍 UI 稿中标注 height 为 1px 的细线，应该如何实现？
 
 #### 6.2.3 技术方案 - viewport units
 
@@ -385,17 +385,24 @@ _github 中近 1 万 star 的 js 库`lib-flexible`便是采用的此方案。_
 
 如果 100%确定当前业务可以完全等比缩放式适配，那么，强烈推荐使用该方案。
 
-- 适配方案中需要用到 viewport=device-width 来实现一些样式描述为 px 单位的特定渲染效果
-- 存在少量不支持 viewport meta 声明的 web 容器。
+_注：Android 的 webview 默认未开启 meta viewport 支持，需要手动开启：`webView.settings.useWideViewPort = true;`_
 
-#### 6.2.4 问题回答
+## 7. 遗留问题回答
 
 > 6.2.1-1 本 rem 方案中，是否可以不设置 viewport 的宽度？
 
 如果是纯粹的等比缩放适配需求，按照 6.2.1 中 rem 方案的公式介绍——根节点的 fontSize = window.innerWidth/remCount，是否设置 viewport 的宽度并不影响 fontSize 的计算，因此可以不设置。
 
-> 6.2.1-2 dpr 为 2 的设备中，2 倍 UI 稿中标注的 1px 粗的细线，应该如何实现？
+> 6.2.1-2 dpr 为 2 的设备中，2 倍 UI 稿中标注 height 为 1px 的细线，应该如何实现？
 
----
+1. 0.5px 方案
 
----
+iOS8+ 支持了 0.5px，但是安卓未支持
+
+2. 奇技淫巧方案
+
+设置 background、border-image、box-shadow、transform 等方案来曲线实现
+
+3. viewport 方案
+
+设置 viewport 宽度为`dpr*device-width`
