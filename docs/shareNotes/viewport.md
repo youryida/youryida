@@ -12,24 +12,13 @@
   - [4. Viewport Meta Tag 的使用](#4-viewport-meta-tag-的使用)
     - [4.1 viewport 属性表](#41-viewport-属性表)
     - [4.2 viewport 属性举例](#42-viewport-属性举例)
-      - [4.2.1 width](#421-width)
-      - [4.2.2 initial-scale](#422-initial-scale)
-      - [4.2.3 maximum-scale / minimum-scale](#423-maximum-scale--minimum-scale)
-      - [4.2.4 user-scalable](#424-user-scalable)
-      - [4.2.5 viewport-fit](#425-viewport-fit)
-      - [4.3 width 和 initial-scale 的取值冲突](#43-width-和-initial-scale-的取值冲突)
+    - [4.3 width 和 initial-scale 的取值冲突](#43-width-和-initial-scale-的取值冲突)
   - [5. Web 开发中的跨屏适配](#5-web-开发中的跨屏适配)
   - [5.1 响应式设计](#51-响应式设计)
   - [5.2 自适应设计](#52-自适应设计)
   - [6. 移动端跨屏适配中的 viewport](#6-移动端跨屏适配中的-viewport)
     - [6.1 布局伸缩式](#61-布局伸缩式)
-      - [6.1.1 需求描述](#611-需求描述)
-      - [6.1.2 技术方案](#612-技术方案)
     - [6.2 等比缩放式](#62-等比缩放式)
-      - [6.2.1 需求描述](#621-需求描述)
-      - [6.2.2 技术方案 - rem](#622-技术方案---rem)
-      - [6.2.3 技术方案 - viewport units](#623-技术方案---viewport-units)
-      - [6.2.3 技术方案 - viewport meta only](#623-技术方案---viewport-meta-only)
   - [7. 遗留问题回答](#7-遗留问题回答)
   - [8. 附：其他拓展说明](#8-附其他拓展说明)
     - [8.1 dpr](#81-dpr)
@@ -275,7 +264,7 @@ Android 和 iOS 在不同版本不同厂商的 Web 容器中，此属性的表�
 - _https://developer.mozilla.org/en-US/docs/Web/CSS/@viewport/viewport-fit_
 - _https://webkit.org/blog/7929/designing-websites-for-iphone-x/_
 
-#### 4.3 width 和 initial-scale 的取值冲突
+### 4.3 width 和 initial-scale 的取值冲突
 
 同理，`width=device-width` 和 `initial-scale=1` 也是等效的。（device-width 对应数值在竖屏模式下为 375，横屏模式下为 667）
 
@@ -522,4 +511,4 @@ _参考：_
 
 但是，万法归宗，了解了 viewport 的核心概念和跨屏适配的策略思路，未来出现任何新特性，都无非是查查文档的问题。
 
-最后，本文的疏漏或描述不当之处，欢迎大家在留言讨论。
+最后，本文的疏漏或描述不当之处，欢迎大家留言讨论。
