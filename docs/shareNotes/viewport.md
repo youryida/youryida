@@ -2,10 +2,9 @@
 
 - [Web 开发中的 viewport 与移动端跨屏适配](#web-开发中的-viewport-与移动端跨屏适配)
   - [1. 引言](#1-引言)
-  - [2. viewport 名词解释](#2-viewport-名词解释)
-    - [2.1 viewport 概念](#21-viewport-概念)
-    - [2.2 viewport 的缩放与平移](#22-viewport-的缩放与平移)
-    - [2.3 viewport 的 DOM API](#23-viewport-的-dom-api)
+  - [2. viewport 概念](#2-viewport-概念)
+    - [2.1 viewport 的缩放与平移](#21-viewport-的缩放与平移)
+    - [2.2 viewport 的 DOM API](#22-viewport-的-dom-api)
   - [3. 移动端的 viewport](#3-移动端的-viewport)
     - [3.1 放大的 viewport](#31-放大的-viewport)
     - [3.2 定制 viewport](#32-定制-viewport)
@@ -49,9 +48,7 @@
 
 本文关键词：移动端适配、Viewport、Viewport Meta Tag、DPR、响应式、自适应、Viewport Units
 
-## 2. viewport 名词解释
-
-### 2.1 viewport 概念
+## 2. viewport 概念
 
 `viewport` 中文译作“视口”。
 
@@ -80,9 +77,9 @@ _参考：https://en.wikipedia.org/wiki/Viewport_
 
 浏览器中，对页面进行放大的时候，视口的大小如何变化？
 
-### 2.2 viewport 的缩放与平移
+### 2.1 viewport 的缩放与平移
 
-回答 2.1 中的问题，视口会变小。
+回答上面的问题，视口会变小。
 
 因为，浏览器窗口中所浏览图像的放大，是依赖于视口的缩小来实现的。
 
@@ -92,7 +89,7 @@ _参考：https://en.wikipedia.org/wiki/Viewport_
 
 同理，当浏览器窗口比较小，而我们想要看到页面下面的内容时，我们需要向下滚动滚动条，浏览器在实现这个的过程中所依赖的，便是视口的下移。
 
-### 2.3 viewport 的 DOM API
+### 2.2 viewport 的 DOM API
 
 关于上面的解释，我们来验证一下。
 
