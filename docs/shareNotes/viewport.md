@@ -73,7 +73,7 @@ _参考：https://en.wikipedia.org/wiki/Viewport_
 以宽度为例：
 
 - document.documentElement.clientWidth（不含滚动条）
-- ~~ window.innerWidth（含滚动条）~~
+- ~~window.innerWidth（含滚动条）~~
 
 ![视口宽度](./assets/viewport/viewport-width-scale.png)
 
