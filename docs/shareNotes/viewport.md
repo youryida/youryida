@@ -42,6 +42,7 @@ _参考：https://en.wikipedia.org/wiki/Viewport_
 - 在浏览器中，我们可以通过滚动条来移动视口以看到更多网页内容。
 
 更形象的视口解释：
+
 ![更形象的视口解释](./assets/viewport/viewport.png)
 如这张某宝的商品放大效果图，左半图为计算机看到的逻辑层画布，上方半透明选框为视口(viewport)，右半图为浏览器窗口，即用户看到的部分。
 
@@ -58,6 +59,7 @@ _参考：https://en.wikipedia.org/wiki/Viewport_
 因为，浏览器窗口中所浏览图像的放大，是依赖于视口的缩小来实现的。
 
 如果不好理解，可以参照下图动画来感受一下。（上面蓝框表示底层画布、红框表示视口，下面表示用户在浏览器窗口中看到的页面）
+
 ![页面缩放时视口变化示意](./assets/viewport/viewport-animate.gif)
 
 同理，当浏览器窗口比较小，而我们想要看到页面下面的内容时，我们需要向下滚动滚动条，浏览器在实现这个的过程中所依赖的，便是视口的下移。
@@ -71,15 +73,17 @@ _参考：https://en.wikipedia.org/wiki/Viewport_
 以宽度为例：
 
 - document.documentElement.clientWidth（不含滚动条）
-- window.innerWidth（含滚动条）
+- ~~ window.innerWidth（含滚动条）~~
 
 ![视口宽度](./assets/viewport/viewport-width-scale.png)
 
 如图，PC Chrome 中试验，确实如之前解释，放大到 200%后，视口大小缩小了一倍。（小数点默认四舍五入了）
 
+window.innerWidth 在移动设备不同浏览器的某些场景下会有兼容性问题，**请勿使用**。
+
 ### 2.4 Visual Viewport 和 Layout Viewport
 
-MDN 对 vieport 的解释中引入了新的概念——`Visual Viewport`和`Layout Viewport`，即可视视口和布局视口。
+MDN 对 viewport 的解释中引入了新的概念——`Visual Viewport`和`Layout Viewport`，即可视视口和布局视口。
 
 _参考：https://developer.mozilla.org/en-US/docs/Glossary/viewport_
 
@@ -278,7 +282,9 @@ Android 和 iOS 在不同版本不同厂商的 Web 容器中，此属性的表�
 <meta name="viewport" content="initial-scale=1,viewport-fit=cover" />
 ```
 
-此属性为 2017 年 Apple 为了解决 iPhoneX 手机的刘海屏问题，增加的新属性。相关技术细节和兼容性本文不做更多讨论，详情可以参考：
+此属性为 2017 年 Apple 为了解决 iPhoneX 手机的刘海屏问题，增加的新属性。
+
+相关技术细节和兼容性本文不做更多讨论，详情可以参考：
 
 - _https://developer.mozilla.org/en-US/docs/Web/CSS/@viewport/viewport-fit_
 - _https://webkit.org/blog/7929/designing-websites-for-iphone-x/_
@@ -299,7 +305,7 @@ Android 和 iOS 在不同版本不同厂商的 Web 容器中，此属性的表�
 
 Safari 的运行结果是"width"的优先级更高，但是这样的对比研究**并没有任何意义**。因为并没有相应的规范约束这件事情，浏览器的兼容表现肯定是千差万别。
 
-作为开发者，我们要做的，就是避免冲突。要么只写一个，要么两个都计算正确。从语义表达角度看，**建议只设置"width"**。从计算方便角度看，可以只设置 initial-scale。
+作为开发者，我们要做的，就是避免冲突。要么只写一个，要么两个都计算正确。从语义表达角度看，建议只设置"width"。从计算方便角度看，可以只设置 initial-scale。
 
 ## 5. Web 开发中的跨屏适配
 
@@ -412,11 +418,11 @@ _github 中近 1 万 star 的 js 库`lib-flexible`便是采用的此方案。_
 
 1vw 即表示当前视口宽度的 1%，我们可以利用这一点替代“rem+根节点 font-size”的等比缩放实现。
 
-举个例子，750px 的 UI 稿中，宽度 75px 的按钮，在 css 中的宽度描述即为：`width:1vw`。
+举个例子，750px 的 UI 稿中，宽度 75px 的按钮，在 css 中的宽度描述即为：`width:10vw`。
 
 其他技术细节同 6.2.2，这里不再做更多阐述。
 
-#### 6.2.3 技术方案 - meta viewport only
+#### 6.2.3 技术方案 - viewport meta only
 
 看起来`viewport units`方案是目前最简单可行的方案了，UI 稿里的标注直接都转换成 vw 单位就可以了，html 中不需要做任何 js 处理。
 
@@ -430,19 +436,25 @@ _github 中近 1 万 star 的 js 库`lib-flexible`便是采用的此方案。_
 
 **是的，不再需要做任何单位的转换。**
 
-当前，前端圈内`meta viewport only`方案并未成为主流方案，个人认为，原因主要是——业务场景中，存在非等比缩放类的适配需求，比如布局只要横向伸缩、字号要 px 固定等。
+而且，完美实现 UI 稿的高保证还原。完全不需要担心什么 0.5px 细线问题。
+
+然而，当前前端圈内`viewport meta only`方案并未成为主流方案，个人认为，原因主要是——业务场景中，存在非等比缩放类的适配需求，比如布局只要横向伸缩、字号要 px 固定等。
 
 如果 100%确定当前业务可以完全等比缩放式适配，那么，强烈推荐使用该方案。
 
-_注：Android 的 webview 默认未开启 meta viewport 支持，需要手动开启：`webView.settings.useWideViewPort = true;`_
+_注：Android 的 webview 默认未开启 viewport meta 支持，需要手动开启`webView.settings.useWideViewPort = true;`_
+
+这里插入一个问题：
+
+使用等比缩放式适配方案开发的页面，如果也需要在 PC 上做合理的展现，应该怎么办？
 
 ## 7. 遗留问题回答
 
-> 6.2.1-1 本 rem 方案中，是否可以不设置 viewport 的宽度？
+**6.2.1-1 “本 rem 方案中，是否可以不设置 viewport 的宽度？”**
 
 如果是纯粹的等比缩放适配需求，按照 6.2.1 中 rem 方案的公式介绍——根节点的 fontSize = window.innerWidth/remCount，是否设置 viewport 的宽度并不影响 fontSize 的计算，因此可以不设置。
 
-> 6.2.1-2 dpr 为 2 的设备中，2 倍 UI 稿中标注 height 为 1px 的细线，应该如何实现？
+**6.2.1-2 “dpr 为 2 的设备中，2 倍 UI 稿中标注 height 为 1px 的细线，应该如何实现？”**
 
 1. 0.5px 方案
 
@@ -455,3 +467,9 @@ _注：Android 的 webview 默认未开启 meta viewport 支持，需要手动�
 3. viewport 方案
 
    设置 viewport 宽度为`dpr*device-width`，然后 css 设置 `height:1px;`。最佳方案，但是需要注意对项目中 px 单位描述的内容的影响。
+
+**6.2.3 “使用等比缩放式适配方案开发的页面，如果也需要在 PC 上做合理的展现，应该怎么办？”**
+
+- 对于`viewport units`方案：因为 vw 等单位的基准是浏览器窗口，所以没有好办法，只能外套一个设定好宽度的\<iframe\>
+- 对于`rem`方案：可以在 js 检测到 PC 浏览器之后，为页面内容设定一个最大宽度 maxWidth 且水平居中，然后根据 maxWidth 计算一个合理的根节点 font-size
+- 对于`viewport meta only`方案，因为 PC 浏览器并不识别 viewport 的 meta 声明，所以其页面内容的渲染表现同 UI 稿，我们只需要设置一个水平居中就好
