@@ -1,8 +1,8 @@
 [TOC]
 
-# Web 开发中的 viewport 与移动端适配
+# Web 开发中的 viewport 与移动端跨屏适配
 
-摘要：解释 viewport 的一切。
+“viewport”是移动端跨屏适配的基石，吃透这一概念，任何复杂多变的适配需求，都可以手到擒来。
 
 ## 1. 引言
 
@@ -15,13 +15,11 @@
 />
 ```
 
-这个声明中隐含的概念、历史和未来，以及如何更合理的搭配 `px/rem/vw` 来做跨屏适配，我们接下来一起探讨一下。
+这个声明中隐含的概念、历史和未来，以及如何更合理的搭配 `%/px/rem/vw` 来做跨屏适配，我们接下来一起探讨一下。
 
 本文关键词：移动端适配、Viewport、Viewport Meta Tag、DPR、响应式、自适应、Viewport Units
 
 ## 2. viewport 名词解释
-
-_视口概念的正确理解是本文所述内容的基础，请认真阅读本章节。_
 
 ### 2.1 viewport 概念
 
@@ -85,25 +83,6 @@ _参考：https://en.wikipedia.org/wiki/Viewport_
 
 如果有需要获取视口宽度的需求，建议使用`document.documentElement.clientWidth`，至少在用户为做任何手动缩放的前提下，其取值是正确的。
 
-### 2.4 Visual Viewport 和 Layout Viewport
-
-MDN 对 viewport 的解释中引入了新的概念——`Visual Viewport`和`Layout Viewport`，即可视视口和布局视口。
-
-_参考：https://developer.mozilla.org/en-US/docs/Glossary/viewport_
-
-> - 视口表示当前正在查看的计算机图形中的多边形（通常为矩形）区域。
-> - 在 Web 浏览器术语中，它指的是您正在查看的文档中当前`可在其窗口中显示的部分`（如果以全屏模式查看文档，则指的是屏幕）。在滚动到视图中之前，视口外部的内容在屏幕上不可见。
->
-> - 当前可见的视口部分称为可视视口。这可以小于布局视口，例如当用户进行缩放缩放时。该布局视口保持不变，但视觉视口变小。
-
-_注：有的文章将 Visual Viewport 译作“视觉视口”，个人认为其语义感不如“可视视口”。_
-
-我们在 2.1 中一直描述的“视口”，即为此处的“可视视口”（**可**在窗口中显示的区域）。2.1 中所说的“画布”指的就是此处的“布局视口”。
-
-~~网上流传较广的一些文章中，把视口分了三种——布局视口、可视视口、理想视口。~~ 个人认为概念太多了反而会增加理解成本。
-
-下面如果不做特别说明，“可视视口”我们依然称为“视口”。
-
 ## 3. 移动端的 viewport
 
 看起来 viewport 并没有太多复杂之处，但是 2012 年左右，移动端时代来了。
@@ -135,39 +114,13 @@ _注：媒体查询请注意区分`@media screen and (xxx){}`中的`min-device-w
 
 #### 3.2.1 Viewport Meta Tag 方案
 
-为了解决固定 viewport 宽度引发的各种问题，Apple 在 iOS Safari 中首先引入了`Viewport Meta Tag`，允许 Web 开发人员定制视口的大小和比例（约 2012 年）。
+为了解决上述固定 viewport 宽度的方案所引发的各种问题，Apple 在 iOS Safari 中首先引入了`Viewport Meta Tag`，允许 Web 开发人员定制视口的大小和比例（约 2012 年）。
 
 _参考：https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html_
 
 虽然，后续其他的移动浏览器也都支持了此标记，但是 W3C 并未将此列入标准。
 
 不过，这并不影响我们使用它。
-
-#### 3.2.2 W3C 草案规范
-
-_注：本小节仅作扩展了解，暂无实际应用价值_
-
-从目前 W3C 的草案规范来看，他希望按如下方式在 css 中声明 viewport，而不是在\<meta\>中。
-
-```css
-@viewport {
-  width: device-width;
-}
-```
-
-W3C 草案中的获取视口宽度 API 为：
-
-```javascript
-window.visualViewport.width;
-```
-
-_更多相关细节，可以参考下面链接，本文不作更多讨论。_
-
-_参考：_
-
-- _https://drafts.csswg.org/css-device-adapt/#the-viewport_
-- _https://developer.mozilla.org/en-US/docs/Web/CSS/@viewport_
-- _https://developer.mozilla.org/en-US/docs/Web/API/VisualViewport_
 
 ## 4. Viewport Meta Tag 的使用
 
@@ -204,14 +157,6 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 - 屏幕逻辑分辨率：375\*667 (screen.width/height)
 - 设备像素比(dpr)：2 (window.devicePixelRatio)
 - 浏览器默认视口宽度：980 (window.innerWidth)
-
-> 关于 dpr
->
-> 大家常说的两倍屏、三倍屏，这里面的倍数指的就是 dpr，即单一方向上，设备像素的点数/逻辑像素的点数。
->
-> - Web 开发中操作的 px，指的是逻辑像素。由于现代手机屏幕物理发光点的排布越来越密集，逻辑上的 1px 也并非对应屏幕上的 1 个发光点。两倍屏的 1px\*1px 对应的是 2\*2=4 个物理点。
-> - 浏览器厂商，根据宿主设备的屏幕物理像素密度，设定了一个 dpr，以便相同数量的逻辑像素在物理世界不同的屏幕上看起来的大小都能差不多。以 iPhone6s 举例，59mm 的屏幕宽度上排布了 750 个发光点，如果 dpr 为 1，那换算下来，PC 视觉上比较舒服的 14px 宽的字体，在手机上显示的物理宽度为 59/750\*14=1.1mm，基本看不清楚的。
-> - 至于，浏览器厂商依据什么样的规范来设定 dpr 的值，这里不做具体讨论了。
 
 #### 4.2.1 width
 
@@ -294,10 +239,6 @@ Android 和 iOS 在不同版本不同厂商的 Web 容器中，此属性的表�
 - _https://webkit.org/blog/7929/designing-websites-for-iphone-x/_
 
 #### 4.3 width 和 initial-scale 的取值冲突
-
-首先回答一下 4.2.2 中的问题：
-
-默认情况下视口的宽度为 980px，设备宽度(device-width)为 375，所以，默认的 initial-scale 为 375/980= 0.38265。
 
 同理，`width=device-width` 和 `initial-scale=1` 也是等效的。（device-width 对应数值在竖屏模式下为 375，横屏模式下为 667）
 
@@ -454,11 +395,15 @@ _注：Android 的 webview 默认未开启 viewport meta 支持，需要手动�
 
 ## 7. 遗留问题回答
 
-**6.2.1-1 “本 rem 方案中，是否可以不设置 viewport 的宽度？”**
+**4.2.2 “iPhone6S 的 safari 中，不做任何 viewport 设置情况下，默认 initial-scale 的值为多少？”**
+
+默认情况下视口的宽度为 980px，设备宽度(device-width)为 375，所以，默认的 initial-scale 为 375/980= 0.38265。
+
+**6.2.1 - 1 “本 rem 方案中，是否可以不设置 viewport 的宽度？”**
 
 如果是纯粹的等比缩放适配需求，按照 6.2.1 中 rem 方案的公式介绍——根节点的 fontSize = window.innerWidth/remCount，是否设置 viewport 的宽度并不影响 fontSize 的计算，因此可以不设置。
 
-**6.2.1-2 “dpr 为 2 的设备中，2 倍 UI 稿中标注 height 为 1px 的细线，应该如何实现？”**
+**6.2.1 - 2 “dpr 为 2 的设备中，2 倍 UI 稿中标注 height 为 1px 的细线，应该如何实现？”**
 
 1. 0.5px 方案
 
@@ -482,8 +427,63 @@ _注：Android 的 webview 默认未开启 viewport meta 支持，需要手动�
 - 对于`rem`方案：可以在 js 检测到 PC 浏览器之后，为页面内容设定一个最大宽度 maxWidth 且水平居中，然后根据 maxWidth 计算一个合理的根节点 font-size
 - 对于`viewport meta only`方案，因为 PC 浏览器并不识别 viewport 的 meta 声明，所以其页面内容的渲染表现同 UI 稿，我们只需要设置一个水平居中就好
 
-## 8. 结语
+## 8. 附：其他拓展说明
 
-本文的核心，在于对 “viewport 概念”以及“声明了 viewport 宽度之后浏览器表现”的理解。掌握了这两点，任何复杂多变的跨屏适配需求，都可以手到擒来。
+### 8.1 dpr
 
-欢迎大家在评论区留言讨论。
+dpr，全称 devicePixelRatio，中文译为设备像素比，用来描述单一方向上，设备物理像素的点数/逻辑像素的点数的比率。值越高，屏幕密度越大。大家常说的两倍屏、三倍屏，这里面的倍数指的就是 dpr。
+
+- Web 开发中操作的 px，指的是逻辑像素。由于现代手机屏幕物理发光点的排布越来越密集，逻辑上的 1px 也并非对应屏幕上的 1 个发光点。两倍屏的 1px\*1px 对应的是 2\*2=4 个物理点。
+- 浏览器厂商，根据宿主设备的屏幕物理像素密度，设定了一个 dpr，以便相同数量的逻辑像素在物理世界不同的屏幕上看起来的大小都能差不多。以 iPhone6s 举例，59mm 的屏幕宽度上排布了 750 个发光点，如果 dpr 为 1，那换算下来，PC 视觉上比较舒服的 14px 宽的字体，在手机上显示的物理宽度为 59/750\*14=1.1mm，基本看不清楚的。
+- 至于，浏览器厂商依据什么样的规范来设定 dpr 的值，这里不做具体讨论了。
+
+### 8.2 Visual Viewport 和 Layout Viewport
+
+MDN 对 viewport 的解释中引入了新的概念——`Visual Viewport`和`Layout Viewport`，即可视视口和布局视口。
+
+> - 视口表示当前正在查看的计算机图形中的多边形（通常为矩形）区域。
+> - 在 Web 浏览器术语中，它指的是您正在查看的文档中当前`可在其窗口中显示的部分`（如果以全屏模式查看文档，则指的是屏幕）。在滚动到视图中之前，视口外部的内容在屏幕上不可见。
+>
+> - 当前可见的视口部分称为可视视口。这可以小于布局视口，例如当用户进行缩放缩放时。该布局视口保持不变，但视觉视口变小。
+
+_注：有的文章将 Visual Viewport 译作“视觉视口”，个人认为其语义感不如“可视视口”。_
+
+我们在文中一直描述的“视口”，即为此处的“可视视口”（**可**在窗口中显示的区域）。文中所说的“画布”指的就是此处的“布局视口”。
+
+~~网上流传较广的一些文章中，把视口分了三种——布局视口、可视视口、理想视口。~~
+
+个人认为概念太多了反而会增加理解成本，无需记忆，意会即可。
+
+_参考：https://developer.mozilla.org/en-US/docs/Glossary/viewport_
+
+### 8.3 viewport 的 W3C 草案规范
+
+_注：本小节仅作扩展了解，暂无实际应用价值_
+
+从目前 W3C 的草案规范来看，他希望按如下方式在 css 中声明 viewport，而不是在\<meta\>中。
+
+```css
+@viewport {
+  width: device-width;
+}
+```
+
+W3C 草案中的获取视口宽度 API 为：
+
+```javascript
+window.visualViewport.width;
+```
+
+_参考：_
+
+- _https://drafts.csswg.org/css-device-adapt/#the-viewport_
+- _https://developer.mozilla.org/en-US/docs/Web/CSS/@viewport_
+- _https://developer.mozilla.org/en-US/docs/Web/API/VisualViewport_
+
+## 9. 结语
+
+本文参考了 2012-2019 多篇 Web 草案文档或社区文章，深切感受到移动互联网发展之迅速，以及快速发展所带来的技术标准之不统一问题。
+
+但是，万法归宗，了解了 viewport 的核心概念和跨屏适配的策略思路，未来出现任何新特性，都无非是查查文档的问题。
+
+最后，本文的疏漏或描述不当之处，欢迎大家在留言讨论。
