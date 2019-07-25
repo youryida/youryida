@@ -2,7 +2,7 @@
 
 # Web 开发中的 viewport 与移动端适配
 
-摘要：解释 viewport 的一切
+摘要：解释 viewport 的一切。
 
 ## 1. 引言
 
@@ -482,4 +482,8 @@ _注：Android 的 webview 默认未开启 viewport meta 支持，需要手动�
 - 对于`rem`方案：可以在 js 检测到 PC 浏览器之后，为页面内容设定一个最大宽度 maxWidth 且水平居中，然后根据 maxWidth 计算一个合理的根节点 font-size
 - 对于`viewport meta only`方案，因为 PC 浏览器并不识别 viewport 的 meta 声明，所以其页面内容的渲染表现同 UI 稿，我们只需要设置一个水平居中就好
 
-## 8.结语
+## 8. 结语
+
+本文的核心，在于对 viewport 概念以及声明了 viewport 宽度之后浏览器表现的理解。掌握了这两点，任何复杂多变的跨屏适配需求，都可以迎刃而解。
+
+欢迎大家在评论区留言讨论。
