@@ -2,6 +2,8 @@
 
 # Web 开发中的 viewport 与移动端适配
 
+摘要：解释 viewport 的一切
+
 ## 1. 引言
 
 移动端开发中，有一个躲避不掉的 HTML meta 声明 `<meta name="viewport">`。通常被用来做跨屏适配，常见声明如下：
@@ -15,25 +17,39 @@
 
 这个声明中隐含的概念、历史和未来，以及如何更合理的搭配 `px/rem/vw` 来做跨屏适配，我们接下来一起探讨一下。
 
-## 2. viewport 简述
+本文关键词：移动端适配、Viewport、Viewport Meta Tag、DPR、响应式、自适应、Viewport Units
+
+## 2. viewport 名词解释
+
+_视口概念的正确理解是本文所述内容的基础，请认真阅读本章节。_
 
 ### 2.1 viewport 概念
 
-`viewport` 中文译作“视口”。[维基百科的解释](https://en.wikipedia.org/wiki/Viewport)为：
+`viewport` 中文译作“视口”。
+
+维基百科的解释为：
 
 > - 在计算机图形学理论中，当将一些对象渲染到图像时，存在两个类似区域的相关概念。(视口和窗口)
-> - 视口是一个以特定于渲染设备的坐标表示的区域（通常为矩形）。视口范围内的图像会以剪切的形式，投影到到世界坐标窗口中，完成图像的可视化展示。
+> - 视口是一个以特定于渲染设备的坐标表示的区域（通常为矩形）。**视口范围内的图像会以剪切的形式**，**投影到**到世界坐标**窗口中**，完成图像的可视化展示。
 > - 在 Web 浏览器中，视口是整个文档的可见部分。如果文档大于视口，则用户可以通过滚动来移动视口。
 
-白话描述一下，计算机把图像渲染到显示器的过程中，会先把图像画在一个逻辑层的画布上，然后从这个画布中框选一部分，将其投影到显示层。这个选框就是`视口`，显示层就是`窗口`。
+_参考：https://en.wikipedia.org/wiki/Viewport_
 
-截一张某宝的商品放大的效果图，来做更形象的视口解释。
+白话描述一下：
+
+- 计算机把图像渲染到显示器的过程中，会先把图像画在一个逻辑层的画布上，然后从这个画布中框选一部分，将其投影到显示层。
+- 这个选框就是`视口`，显示层就是`窗口`。
+- 在浏览器中，我们可以通过滚动条来移动视口以看到更多网页内容。
+
+更形象的视口解释：
 ![更形象的视口解释](./assets/viewport/viewport.png)
-如图，左半图为计算机里的看不到的逻辑画布，上方半透明选框为视口(viewport)，右半图为窗口，即用户看到的部分。
+如这张某宝的商品放大效果图，左半图为计算机看到的逻辑层画布，上方半透明选框为视口(viewport)，右半图为浏览器窗口，即用户看到的部分。
 
 逻辑关系简单清晰。
 
-此处插入一个问题：浏览器中，对页面进行放大的时候，视口的大小如何变化？
+此处插入一个问题：
+
+浏览器中，对页面进行放大的时候，视口的大小如何变化？
 
 ### 2.2 viewport 的缩放与平移
 
@@ -41,12 +57,10 @@
 
 因为，浏览器窗口中所浏览图像的放大，是依赖于视口的缩小来实现的。
 
-参考 2.1 中插图来理解，右侧浏览器窗口不变的情况下，左侧视口缩小到只能覆盖模特的面部时，右侧窗口中的图像就会放大到满屏都是大头像了。
-
-如果不好理解，可以参照下图动画来感受一下。（上面蓝框表示底层画布、红框表示视口，下面表示用户在窗口中看到的页面）
+如果不好理解，可以参照下图动画来感受一下。（上面蓝框表示底层画布、红框表示视口，下面表示用户在浏览器窗口中看到的页面）
 ![页面缩放时视口变化示意](./assets/viewport/viewport-animate.gif)
 
-同理，在浏览器窗口中，当我们想看到模特的小腿时，我们需要向下滚动滚动条，浏览器在实现这个的过程中所依赖的，便是视口的下移。
+同理，当浏览器窗口比较小，而我们想要看到页面下面的内容时，我们需要向下滚动滚动条，浏览器在实现这个的过程中所依赖的，便是视口的下移。
 
 ### 2.3 viewport 的 DOM API
 
@@ -65,21 +79,22 @@
 
 ### 2.4 Visual Viewport 和 Layout Viewport
 
-在 [MDN 对 vieport 的解释](https://developer.mozilla.org/en-US/docs/Glossary/viewport)中
+MDN 对 vieport 的解释中引入了新的概念——`Visual Viewport`和`Layout Viewport`，即可视视口和布局视口。
 
-> - 视口表示当前正在查看的计算机图形中的多边形（通常为矩形）区域。在 Web 浏览器术语中，它指的是您正在查看的文档中当前`可在其窗口中显示的部分`（如果以全屏模式查看文档，则指的是屏幕）。在滚动到视图中之前，视口外部的内容在屏幕上不可见。
+_参考：https://developer.mozilla.org/en-US/docs/Glossary/viewport_
+
+> - 视口表示当前正在查看的计算机图形中的多边形（通常为矩形）区域。
+> - 在 Web 浏览器术语中，它指的是您正在查看的文档中当前`可在其窗口中显示的部分`（如果以全屏模式查看文档，则指的是屏幕）。在滚动到视图中之前，视口外部的内容在屏幕上不可见。
 >
 > - 当前可见的视口部分称为可视视口。这可以小于布局视口，例如当用户进行缩放缩放时。该布局视口保持不变，但视觉视口变小。
 
-引入了新的概念——`Visual Viewport`和`Layout Viewport`，即可视视口和布局视口。
-
 _注：有的文章将 Visual Viewport 译作“视觉视口”，个人认为其语义感不如“可视视口”。_
 
-我们上面一直描述的视口，即为此处的“可视视口”——**可**在窗口中显示的区域。而“布局视口”则指的就是 2.1 白话描述中的画布。
+我们在 2.1 中一直描述的“视口”，即为此处的“可视视口”（**可**在窗口中显示的区域）。2.1 中所说的“画布”指的就是此处的“布局视口”。
 
-~~网上流传较广的一些文章中，把视口分了三种——布局视口、可视视口、理想视口。~~
+~~网上流传较广的一些文章中，把视口分了三种——布局视口、可视视口、理想视口。~~ 个人认为概念太多了反而会增加理解成本。
 
-个人认为概念太多了反而会增加理解成本。下面如果不做特别说明，视口，依然指的是“可视视口”。
+下面如果不做特别说明，“可视视口”我们依然称为“视口”。
 
 ## 3. 移动端的 viewport
 
@@ -99,17 +114,32 @@ _注：移动设备的显著特点是屏幕小，考虑到国际社会通行的�
 
 ![移动端浏览PC页面效果](./assets/viewport/pc-in-mobile.png)
 如上图，页面载入时，我们可以一眼看到整个页面的样子了。
-不过，对缩小版页面内细节内容的浏览，依然要依靠放大和滚动，这样的体验依然不够好。而且如果 PC 网页的 CSS 宽度大于 980px，那么初始页面依然会有滚动条。
+
+不过，该方案依然会有很多问题：
+
+- 对缩小版页面内细节内容的浏览，依然要依靠放大和滚动，体验不好
+- 如果 PC 网页的 CSS 宽度描述大于 980px，那么初始页面依然会有滚动条
+- 限制了针对视口宽度做媒体查询(Media queries)机制的有效性，因为视口宽度初始为 980px，浏览器不会以 640px、480px 或更低分辨率来启动对应的媒体查询
+
+_注：媒体查询请注意区分`@media screen and (xxx){}`中的`min-device-width`和`min-width`，前者依据的是设备宽度(screen.width)，后者依据的是视口宽度(window.innerWidth)。_
 
 ### 3.2 定制 viewport
 
-对于使用媒体查询技术(Media queries)对窄屏进行优化的页面，3.1 所述的方案显得更加不合理了。因为，如果视口宽度初始为 980px，那么浏览器便不会以 640px、480px 或更低分辨率来启动对应的媒体查询，从而限制了这类查询机制的有效性。
+#### 3.2.1 Viewport Meta Tag 方案
 
-为了解决这个问题，Apple 在 iOS Safari 中首先引入了`viewport meta tag`，允许 Web 开发人员[定制视口](https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html)的大小和比例（约 2012 年）。
+为了解决固定 viewport 宽度引发的各种问题，Apple 在 iOS Safari 中首先引入了`Viewport Meta Tag`，允许 Web 开发人员定制视口的大小和比例（约 2012 年）。
 
-虽然，后续其他的移动浏览器也都支持了此标记，但是 W3C 并未将此列入标准。（这并不影响我们使用它）
+_参考：https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html_
 
-_从目前 W3C 的草案规范来看，他希望按如下方式在 css 中声明 viewport，而不是在\<meta\>中。_
+虽然，后续其他的移动浏览器也都支持了此标记，但是 W3C 并未将此列入标准。
+
+不过，这并不影响我们使用它。
+
+#### 3.2.2 W3C 草案规范
+
+_注：本小节仅作扩展了解，暂无实际应用价值_
+
+从目前 W3C 的草案规范来看，他希望按如下方式在 css 中声明 viewport，而不是在\<meta\>中。
 
 ```css
 @viewport {
@@ -117,7 +147,7 @@ _从目前 W3C 的草案规范来看，他希望按如下方式在 css 中声明
 }
 ```
 
-_W3C 草案中的获取视口宽度 API 为：_
+W3C 草案中的获取视口宽度 API 为：
 
 ```javascript
 window.visualViewport.width;
@@ -125,11 +155,11 @@ window.visualViewport.width;
 
 _更多相关细节，可以参考下面链接，本文不作更多讨论。_
 
-> 参考：
->
-> - https://drafts.csswg.org/css-device-adapt/#the-viewport
-> - https://developer.mozilla.org/en-US/docs/Web/CSS/@viewport
-> - https://developer.mozilla.org/en-US/docs/Web/API/VisualViewport
+_参考：_
+
+- _https://drafts.csswg.org/css-device-adapt/#the-viewport_
+- _https://developer.mozilla.org/en-US/docs/Web/CSS/@viewport_
+- _https://developer.mozilla.org/en-US/docs/Web/API/VisualViewport_
 
 ## 4. Viewport Meta Tag 的使用
 
@@ -150,7 +180,8 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 | initial-scale | 正数                           | 设备宽度(device-width)与视口宽度的初始缩放比值。                                |
 | maximum-scale | 正数                           | 缩放的最大值；它必须大于或等于 minimum-scale 的值，不然会导致不确定的行为发生。 |
 | minimum-scale | 正数                           | 缩放的最小值；它必须小于或等于 maximum-scale 的值，不然会导致不确定的行为发生。 |
-| user-scalable | yes/no                         | 是否允许用户缩放。默认值为  yes。                                               |
+| user-scalable | yes/no                         | 是否允许用户缩放。默认值为 yes。                                                |
+| viewport-fit  | contain/cover                  | 视口填充屏幕的方式。默认值为 contain。                                          |
 
 ### 4.2 viewport 属性举例
 
@@ -187,6 +218,7 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 <meta name="viewport" content="width=device-width" />
 ```
 
+- 效果等同于 width=375
 - window.innerWidth 输出 375
 - div 宽度 375px 时，横向刚好铺满屏幕，超过出现横向滚动条
 
@@ -196,7 +228,7 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 <meta name="viewport" content="initial-scale=1" />
 ```
 
-- 同 width=device-width
+- 效果等同于 width=device-width
 
 ```html
 <meta name="viewport" content="initial-scale=2" />
@@ -204,9 +236,11 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 
 - window.innerWidth 输出 188 (375/2)
 - div 宽度 188px 时，横向刚好铺满屏幕，超过出现横向滚动条
+- scale 倍数越小，视口越大
 
 此处插入一个问题：
-不做任何 viewport 设置情况下，默认 initial-scale 的值为多少？
+
+iPhone6S 的 safari 中，不做任何 viewport 设置情况下，默认 initial-scale 的值为多少？
 
 #### 4.2.3 maximum-scale / minimum-scale
 
@@ -230,7 +264,7 @@ Android 和 iOS 在不同版本不同厂商的 Web 容器中，此属性的表�
 #### 4.2.4 user-scalable
 
 ```html
-<meta name="viewport" content="user-scalable=no" />
+<meta name="viewport" content="initial-scale=1,user-scalable=no" />
 ```
 
 - Safari 中依然无法缩小可以放大，微信中无法缩放
@@ -238,13 +272,24 @@ Android 和 iOS 在不同版本不同厂商的 Web 容器中，此属性的表�
 
 同 4.2.3，此属性同样存在兼容问题，请谨慎使用
 
-#### 4.2.5 width 和 initial-scale 的取值冲突
+#### 4.2.5 viewport-fit
 
-```
-首先回答一下 4.2.2 中的问题，默认情况下视口的宽度为 980px，设备宽度(device-width)为 375，所以，默认的 initial-scale 为 375/980= 0.38265
+```html
+<meta name="viewport" content="initial-scale=1,viewport-fit=cover" />
 ```
 
-同理，"width=device-width" 和 "initial-scale=1" 也是等效的。（device-width 对应数值在竖屏模式下为 375，横屏模式下为 667）
+此属性为 2017 年 Apple 为了解决 iPhoneX 手机的刘海屏问题，增加的新属性。相关技术细节和兼容性本文不做更多讨论，详情可以参考：
+
+- _https://developer.mozilla.org/en-US/docs/Web/CSS/@viewport/viewport-fit_
+- _https://webkit.org/blog/7929/designing-websites-for-iphone-x/_
+
+#### 4.3 width 和 initial-scale 的取值冲突
+
+首先回答一下 4.2.2 中的问题：
+
+默认情况下视口的宽度为 980px，设备宽度(device-width)为 375，所以，默认的 initial-scale 为 375/980= 0.38265。
+
+同理，`width=device-width` 和 `initial-scale=1` 也是等效的。（device-width 对应数值在竖屏模式下为 375，横屏模式下为 667）
 
 既然，两个属性的作用都是设置初始视口大小，那同时设置且存在冲突的情况下，浏览器会怎么处理呢？优先级规则是按书写顺序还是宽度大小？比如下面这样：
 
@@ -252,9 +297,9 @@ Android 和 iOS 在不同版本不同厂商的 Web 容器中，此属性的表�
 <meta name="viewport" content="width=device-width,initial-scale=2" />
 ```
 
-Safari 的运行结果是"initial-scale"的优先级更高，但是这样的对比研究**并没有任何意义**。因为并没有相应的规范约束这件事情，浏览器的兼容表现肯定是千差万别。
+Safari 的运行结果是"width"的优先级更高，但是这样的对比研究**并没有任何意义**。因为并没有相应的规范约束这件事情，浏览器的兼容表现肯定是千差万别。
 
-作为开发者，我们要做的，就是避免冲突。要么只写一个，要么两个都计算正确。从语义表达角度看，**建议只设置"width"**。
+作为开发者，我们要做的，就是避免冲突。要么只写一个，要么两个都计算正确。从语义表达角度看，**建议只设置"width"**。从计算方便角度看，可以只设置 initial-scale。
 
 ## 5. Web 开发中的跨屏适配
 
@@ -267,10 +312,12 @@ Safari 的运行结果是"initial-scale"的优先级更高，但是这样的对�
 
 ![代码和屏幕的对应关系示意图](./assets/viewport/adaptive-responsive-demo1.png)
 
-> 响应式和自适应的区别，国内外各种社区都有很多的讨论，甚至争议。但是核心区别的共识，就是在于两个维度：代码和屏幕的对应关系、屏幕适配的粒度。（演示如下图）
+> 响应式和自适应的区别，国内外各种社区都有很多的讨论，甚至争议。
+> 两种方式更多是一种`UI设计`层面的区别。技术实现层面，区别并不明显。
+> 但是核心区别的共识，就是在于两个维度：代码和屏幕的对应关系、屏幕适配的粒度。
 >
-> - 响应式。一套代码适配所有屏幕；屏幕适配无粒度区分，宽度变化时内容布局无缝圆滑变化。
-> - 自适应。多个屏幕对应多套代码；屏幕适配有粒度区分，宽度变化时，内容布局卡顿式梯级变化。
+> - 响应式。屏幕适配无粒度区分，同一设备上做宽度变化时，内容布局无缝圆滑变化；技术实现通常为，一套代码适配所有屏幕。
+> - 自适应。屏幕适配有粒度区分，原则上不做过渡态的 UI 设计，同一设备上做宽度变化时，内容布局卡顿式梯级变化；技术实现通常为，多个屏幕对应多套代码。（演示如下图）
 
 ![屏幕适配的粒度示意图](./assets/viewport/adaptive-responsive-demo2.gif)
 
@@ -278,9 +325,11 @@ _注：前端很多概念，意会即可，不必深究_
 
 ## 5.1 响应式设计
 
-响应式设计方案，常见于 PC、移动等多端共用一套代码的场景。典型的 Web 站点如`GitHub`（演示见下图）。浏览这类站点时，随着屏幕的缩小，你会看到页面模块的布局结构在伸缩、流动或显隐变化，文字图片等主体内容在布局容器内流动填充、其大小也一直在做梯级变化。
+响应式设计方案，常见于 PC、移动等多端共用一套代码的场景。典型的 Web 站点如`GitHub`（演示见下图）。
 
 ![github响应式示意图](./assets/viewport/github-demo.gif)
+
+浏览这类站点时，随着屏幕的缩小，你会看到页面模块的布局结构在伸缩、流动或显隐变化，文字图片等主体内容在布局容器内流动填充、其大小也一直在做梯级变化。
 
 ## 5.2 自适应设计
 
