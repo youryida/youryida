@@ -48,7 +48,7 @@ _参考：https://en.wikipedia.org/wiki/Viewport_
 
 逻辑关系简单清晰。
 
-此处插入一个问题：
+**此处插入一个问题：**
 
 浏览器中，对页面进行放大的时候，视口的大小如何变化？
 
@@ -242,7 +242,7 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 - div 宽度 188px 时，横向刚好铺满屏幕，超过出现横向滚动条
 - scale 倍数越小，视口越大
 
-此处插入一个问题：
+**此处插入一个问题：**
 
 iPhone6S 的 safari 中，不做任何 viewport 设置情况下，默认 initial-scale 的值为多少？
 
@@ -444,7 +444,7 @@ _github 中近 1 万 star 的 js 库`lib-flexible`便是采用的此方案。_
 
 _注：Android 的 webview 默认未开启 viewport meta 支持，需要手动开启`webView.settings.useWideViewPort = true;`_
 
-这里插入一个问题：
+**此处插入一个问题：**
 
 使用等比缩放式适配方案开发的页面，如果也需要在 PC 上做合理的展现，应该怎么办？
 
