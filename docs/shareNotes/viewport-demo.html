@@ -29,7 +29,6 @@
       h2 {
         background: blue;
         width: 3.75vw;
-        margin-top: 50vh;
       }
 
       /* @media screen and (min-device-width: 1921px) {
@@ -43,18 +42,25 @@
     <h1>哈哈哈</h1>
     <h2>holder</h2>
     <h3></h3>
-    <h2>holder</h2>
+    <h1 onclick="alert(getInfo())">test</h1>
   </body>
   <script>
     // alert(window.innerWidth);
-    document.write(
-      document.documentElement.clientWidth +
+    document.write(getInfo());
+    function getInfo() {
+      return (
+        document.documentElement.clientWidth +
         "/" +
         window.innerWidth +
         "/" +
+        window.outerWidth +
+        "/" +
         screen.width +
         "/" +
+        (window.visualViewport ? visualViewport.width : "") +
+        "/" +
         window.devicePixelRatio
-    );
+      );
+    }
   </script>
 </html>

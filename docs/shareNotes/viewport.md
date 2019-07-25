@@ -79,7 +79,11 @@ _参考：https://en.wikipedia.org/wiki/Viewport_
 
 如图，PC Chrome 中试验，确实如之前解释，放大到 200%后，视口大小缩小了一倍。（小数点默认四舍五入了）
 
-window.innerWidth 在移动设备不同浏览器的某些场景下会有兼容性问题，**请勿使用**。
+**注意：**
+
+在移动端的浏览器中，对页面手动捏合做缩放时，`document.documentElement.clientWidth` 不会有任何变化。`window.innerWidth`在 iOS 中会等比例缩小，在 Android 的不同浏览器中表现差异较大。
+
+如果有需要获取视口宽度的需求，建议使用`document.documentElement.clientWidth`，至少在用户为做任何手动缩放的前提下，其取值是正确的。
 
 ### 2.4 Visual Viewport 和 Layout Viewport
 
@@ -181,7 +185,7 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 | ------------- | ------------------------------ | ------------------------------------------------------------------------------- |
 | width         | 正整数或者字符串 device-width  | 视口宽度(px)。                                                                  |
 | height        | 正整数或者字符串 device-height | 视口高度(px)。                                                                  |
-| initial-scale | 正数                           | 设备宽度(device-width)与视口宽度的初始缩放比值。                                |
+| initial-scale | 正数                           | 设备逻辑宽度(device-width)与视口宽度的初始缩放比值。                            |
 | maximum-scale | 正数                           | 缩放的最大值；它必须大于或等于 minimum-scale 的值，不然会导致不确定的行为发生。 |
 | minimum-scale | 正数                           | 缩放的最小值；它必须小于或等于 maximum-scale 的值，不然会导致不确定的行为发生。 |
 | user-scalable | yes/no                         | 是否允许用户缩放。默认值为 yes。                                                |
@@ -470,6 +474,12 @@ _注：Android 的 webview 默认未开启 viewport meta 支持，需要手动�
 
 **6.2.3 “使用等比缩放式适配方案开发的页面，如果也需要在 PC 上做合理的展现，应该怎么办？”**
 
-- 对于`viewport units`方案：因为 vw 等单位的基准是浏览器窗口，所以没有好办法，只能外套一个设定好宽度的\<iframe\>
+不做大的代码调整的话，等比缩放类的移动端网页，在 PC 上的合理展现方式应该是页面总宽度锁定在某个值，然后水平方向居中。（如下图）
+
+![等比缩放式页面的PC展现](./assets/viewport/scale-demo-pc.gif)
+
+- 对于`viewport units`方案：因为 vw 等单位的基准是浏览器窗口，所以没有好办法，只能整体套入到一个设定好宽度的\<iframe\>
 - 对于`rem`方案：可以在 js 检测到 PC 浏览器之后，为页面内容设定一个最大宽度 maxWidth 且水平居中，然后根据 maxWidth 计算一个合理的根节点 font-size
 - 对于`viewport meta only`方案，因为 PC 浏览器并不识别 viewport 的 meta 声明，所以其页面内容的渲染表现同 UI 稿，我们只需要设置一个水平居中就好
+
+## 8.结语
