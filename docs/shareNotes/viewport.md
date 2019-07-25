@@ -2,7 +2,7 @@
 
 # Web 开发中的 viewport 与移动端跨屏适配
 
-“viewport”是移动端跨屏适配的基石，吃透这一概念，任何复杂多变的适配需求，都可以手到擒来。
+`viewport`是移动端跨屏适配的基石，吃透这一概念，任何复杂多变的适配需求，都可以手到擒来。
 
 ## 1. 引言
 
@@ -112,25 +112,21 @@ _注：媒体查询请注意区分`@media screen and (xxx){}`中的`min-device-w
 
 ### 3.2 定制 viewport
 
-#### 3.2.1 Viewport Meta Tag 方案
+为了解决上述固定 viewport 宽度的方案所引发的各种问题，Apple 在 iOS Safari 中首先引入了`Viewport Meta Tag`，允许 Web 开发人员定制视口的大小和比例，后续其他的移动浏览器厂商也都支持了此标记（约 2012 年）。
 
-为了解决上述固定 viewport 宽度的方案所引发的各种问题，Apple 在 iOS Safari 中首先引入了`Viewport Meta Tag`，允许 Web 开发人员定制视口的大小和比例（约 2012 年）。
+虽然至今 W3C 都未将此标记列入标准，但是，这并不影响我们使用它。
 
 _参考：https://developer.apple.com/library/archive/documentation/AppleApplications/Reference/SafariWebContent/UsingtheViewport/UsingtheViewport.html_
 
-虽然，后续其他的移动浏览器也都支持了此标记，但是 W3C 并未将此列入标准。
-
-不过，这并不影响我们使用它。
-
 ## 4. Viewport Meta Tag 的使用
 
-由 iOS 的 Safari 率先引入的`Viewport Meta Tag`声明，在 2012 年左右就被各大主流移动浏览器厂商所支持，我们可以在 Apple 或者 MDN 的开发者文档中查看具体用法说明。
+我们可以在 Apple 或者 MDN 的开发者文档中查看`Viewport Meta Tag`的具体用法说明。
 
 需要注意的一点是，目前**只有移动端的浏览器**支持这一声明方式，**PC 上是无效的**。
 
 _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在一些问题，有一些 Web 组织，如 WICG(Web Platform Incubator Community Group)目前在尝试推动解决这个问题。这里不做更多讨论。（参考：https://github.com/WICG/visual-viewport）_
 
-### 4.1 viewport 属性取值
+### 4.1 viewport 属性表
 
 `<meta name="viewport">`支持多个属性取值，如下表：
 
@@ -264,8 +260,7 @@ Safari 的运行结果是"width"的优先级更高，但是这样的对比研究
 ![代码和屏幕的对应关系示意图](./assets/viewport/adaptive-responsive-demo1.png)
 
 > 响应式和自适应的区别，国内外各种社区都有很多的讨论，甚至争议。
-> 两种方式更多是一种`UI设计`层面的区别。技术实现层面，区别并不明显。
-> 但是核心区别的共识，就是在于两个维度：代码和屏幕的对应关系、屏幕适配的粒度。
+> 个人认为两种方式更多是一种`UI设计`层面的区别。技术实现层面，区别并不明显。
 >
 > - 响应式。屏幕适配无粒度区分，同一设备上做宽度变化时，内容布局无缝圆滑变化；技术实现通常为，一套代码适配所有屏幕。
 > - 自适应。屏幕适配有粒度区分，原则上不做过渡态的 UI 设计，同一设备上做宽度变化时，内容布局卡顿式梯级变化；技术实现通常为，多个屏幕对应多套代码。（演示如下图）
