@@ -1,6 +1,47 @@
-[TOC]
+<!-- TOC -->
+
+- [Web 开发中的 viewport 与移动端跨屏适配](#web-开发中的-viewport-与移动端跨屏适配)
+  - [1. 引言](#1-引言)
+  - [2. viewport 名词解释](#2-viewport-名词解释)
+    - [2.1 viewport 概念](#21-viewport-概念)
+    - [2.2 viewport 的缩放与平移](#22-viewport-的缩放与平移)
+    - [2.3 viewport 的 DOM API](#23-viewport-的-dom-api)
+  - [3. 移动端的 viewport](#3-移动端的-viewport)
+    - [3.1 放大的 viewport](#31-放大的-viewport)
+    - [3.2 定制 viewport](#32-定制-viewport)
+  - [4. Viewport Meta Tag 的使用](#4-viewport-meta-tag-的使用)
+    - [4.1 viewport 属性表](#41-viewport-属性表)
+    - [4.2 viewport 属性举例](#42-viewport-属性举例)
+      - [4.2.1 width](#421-width)
+      - [4.2.2 initial-scale](#422-initial-scale)
+      - [4.2.3 maximum-scale / minimum-scale](#423-maximum-scale--minimum-scale)
+      - [4.2.4 user-scalable](#424-user-scalable)
+      - [4.2.5 viewport-fit](#425-viewport-fit)
+      - [4.3 width 和 initial-scale 的取值冲突](#43-width-和-initial-scale-的取值冲突)
+  - [5. Web 开发中的跨屏适配](#5-web-开发中的跨屏适配)
+  - [5.1 响应式设计](#51-响应式设计)
+  - [5.2 自适应设计](#52-自适应设计)
+  - [6. 移动端多屏适配中的 viewport](#6-移动端多屏适配中的-viewport)
+    - [6.1 布局伸缩式](#61-布局伸缩式)
+      - [6.1.1 需求描述](#611-需求描述)
+      - [6.1.2 技术方案](#612-技术方案)
+    - [6.2 等比缩放式](#62-等比缩放式)
+      - [6.2.1 需求描述](#621-需求描述)
+      - [6.2.2 技术方案 - rem](#622-技术方案---rem)
+      - [6.2.3 技术方案 - viewport units](#623-技术方案---viewport-units)
+      - [6.2.3 技术方案 - viewport meta only](#623-技术方案---viewport-meta-only)
+  - [7. 遗留问题回答](#7-遗留问题回答)
+  - [8. 附：其他拓展说明](#8-附其他拓展说明)
+    - [8.1 dpr](#81-dpr)
+    - [8.2 Visual Viewport 和 Layout Viewport](#82-visual-viewport-和-layout-viewport)
+    - [8.3 viewport 的 W3C 草案规范](#83-viewport-的-w3c-草案规范)
+  - [9. 结语](#9-结语)
+
+<!-- /TOC -->
 
 # Web 开发中的 viewport 与移动端跨屏适配
+
+标题党：解释移动 Web 开发中 viewport 的一切
 
 `viewport`是移动端跨屏适配的基石，吃透这一概念，任何复杂多变的适配需求，都可以手到擒来。
 
