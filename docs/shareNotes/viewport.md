@@ -388,7 +388,7 @@ _注：一些文本段落展示类的需求，UI 设计师可能会希望宽屏�
 
 _github 中近 1 万 star 的 js 库`lib-flexible`便是采用的此方案。_
 
-这里插入两个问题：
+此处插入两个问题：
 
 1. 本 rem 方案中，是否可以不设置 viewport 的宽度？
 2. dpr 为 2 的设备中，2 倍 UI 稿中标注 height 为 1px 的细线，应该如何实现？
@@ -435,11 +435,11 @@ _注：Android 的 webview 默认未开启 viewport meta 支持，需要手动�
 
 默认情况下视口的宽度为 980px，设备宽度(device-width)为 375，所以，默认的 initial-scale 为 375/980= 0.38265。
 
-**6.2.1 - 1 “本 rem 方案中，是否可以不设置 viewport 的宽度？”**
+**6.2.2 - 1 “本 rem 方案中，是否可以不设置 viewport 的宽度？”**
 
 如果是纯粹的等比缩放适配需求，按照 6.2.1 中 rem 方案的公式介绍——根节点的 fontSize = window.innerWidth/remCount，是否设置 viewport 的宽度并不影响 fontSize 的计算，因此可以不设置。
 
-**6.2.1 - 2 “dpr 为 2 的设备中，2 倍 UI 稿中标注 height 为 1px 的细线，应该如何实现？”**
+**6.2.2 - 2 “dpr 为 2 的设备中，2 倍 UI 稿中标注 height 为 1px 的细线，应该如何实现？”**
 
 1. 0.5px 方案
 
