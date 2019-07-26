@@ -1,6 +1,6 @@
 <!-- TOC -->
 
-- [Web 开发中的 viewport 与移动端跨屏适配](#web-开发中的-viewport-与移动端跨屏适配)
+- [移动 Web 开发中的 viewport 与跨屏适配](#移动-web-开发中的-viewport-与跨屏适配)
   - [1. 引言](#1-引言)
   - [2. viewport 概念](#2-viewport-概念)
     - [2.1 viewport 的缩放与平移](#21-viewport-的缩放与平移)
@@ -28,7 +28,7 @@
 
 <!-- /TOC -->
 
-# Web 开发中的 viewport 与移动端跨屏适配
+# 移动 Web 开发中的 viewport 与跨屏适配
 
 标题党：解释一切之——移动 web 开发中的 viewport
 
