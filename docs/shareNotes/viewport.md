@@ -8,7 +8,7 @@
   - [3. 移动端的 viewport](#3-移动端的-viewport)
     - [3.1 窄屏设备的问题](#31-窄屏设备的问题)
     - [3.2 放大的 viewport](#32-放大的-viewport)
-    - [3.3 定制 viewport](#33-定制-viewport)
+    - [3.3 可定制的 viewport](#33-可定制的-viewport)
   - [4. Viewport Meta Tag 的使用](#4-viewport-meta-tag-的使用)
     - [4.1 viewport 属性表](#41-viewport-属性表)
     - [4.2 viewport 属性举例](#42-viewport-属性举例)
@@ -142,7 +142,7 @@ _注：移动设备的显著特点是屏幕小，考虑到国际社会通行的�
 
 _注：媒体查询请注意区分"@media screen and (xxx){}"中的`min-device-width`和`min-width`，前者依据的是设备逻辑宽度(screen.width)，后者依据的是视口宽度(window.innerWidth)。_
 
-### 3.3 定制 viewport
+### 3.3 可定制的 viewport
 
 _浏览器厂商：“既然我说的数，你们都各种意见，那好吧，你们自己定吧。”_
 
