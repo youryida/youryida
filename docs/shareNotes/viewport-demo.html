@@ -3,23 +3,24 @@
   <head>
     <meta charset="UTF-8" />
     <title>Document</title>
-    <meta name="viewport" content="width=750,initial-scale=2" />
+    <meta name="viewport" content="initial-scale=1,width=750" />
     <style>
       * {
         margin: 0;
         padding: 0;
       }
       html {
-        font-size: 10vw;
+        /* overflow: hidden; */
       }
       body {
+        font-size: 10vw;
         background: #eee;
-        overflow: hidden;
+        /* overflow: hidden; */
       }
       h1 {
         background: green;
-        width: 370px;
-        height: 370px;
+        width: 400px;
+        height: 30px;
         font-size: 14px;
         font-weight: normal;
         border-bottom: 0.2vw solid red;
@@ -43,24 +44,24 @@
     <h2>holder</h2>
     <h3></h3>
     <h1 onclick="alert(getInfo())">test</h1>
+    <script>
+      // alert(window.innerWidth);
+      document.write(getInfo());
+      function getInfo() {
+        return (
+          document.documentElement.clientWidth +
+          "/" +
+          window.innerWidth +
+          "/" +
+          window.outerWidth +
+          "/" +
+          screen.width +
+          "<br>/" +
+          (window.visualViewport ? visualViewport.width : "") +
+          "/" +
+          window.devicePixelRatio
+        );
+      }
+    </script>
   </body>
-  <script>
-    // alert(window.innerWidth);
-    document.write(getInfo());
-    function getInfo() {
-      return (
-        document.documentElement.clientWidth +
-        "/" +
-        window.innerWidth +
-        "/" +
-        window.outerWidth +
-        "/" +
-        screen.width +
-        "/" +
-        (window.visualViewport ? visualViewport.width : "") +
-        "/" +
-        window.devicePixelRatio
-      );
-    }
-  </script>
 </html>

@@ -107,9 +107,11 @@ _参考：https://en.wikipedia.org/wiki/Viewport_
 
 **注意：**
 
-在移动端的浏览器中，对页面手动捏合做缩放时，`document.documentElement.clientWidth` 不会有任何变化。`window.innerWidth`在 iOS 中会等比例缩小，在 Android 的不同浏览器中表现差异较大。
+在移动端的浏览器中，对页面手动捏合做放大时，`document.documentElement.clientWidth` 不会有任何变化。`window.innerWidth`在 iOS 中会等倍数缩小，在 Android 的不同浏览器中表现差异较大。
 
-如果有需要获取视口宽度的需求，建议使用`document.documentElement.clientWidth`，至少在用户为做任何手动缩放的前提下，其取值是正确的。
+如果有需要**获取初始视口宽度**的需求，建议使用`document.documentElement.clientWidth`。
+
+_参考：https://developer.mozilla.org/en-US/docs/Web/CSS/Viewport_concepts_
 
 ## 3. 移动端的 viewport
 
