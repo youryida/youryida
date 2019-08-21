@@ -107,13 +107,15 @@ _参考：https://en.wikipedia.org/wiki/Viewport_
 
 **注意：**
 
-在移动端的浏览器中，对页面手动捏合做缩放时，`document.documentElement.clientWidth` 不会有任何变化。`window.innerWidth`在 iOS 中会等比例缩小，在 Android 的不同浏览器中表现差异较大。
+在移动端的浏览器中，对页面手动捏合做放大时，`document.documentElement.clientWidth` 不会有任何变化。`window.innerWidth`在 iOS 中会等倍数缩小，在 Android 的不同浏览器中表现差异较大。
 
-如果有需要获取视口宽度的需求，建议使用`document.documentElement.clientWidth`，至少在用户为做任何手动缩放的前提下，其取值是正确的。
+如果有需要**获取初始视口宽度**的需求，建议使用`document.documentElement.clientWidth`。
+
+_参考：https://developer.mozilla.org/en-US/docs/Web/CSS/Viewport_concepts_
 
 ## 3. 移动端的 viewport
 
-看起来 viewport 并没有太多复杂之处，但是 2012 年左右，移动端时代来了。
+看起来 viewport 并没有太多复杂之处，但是 2010 年左右，移动端时代来了。
 
 _注：移动设备的显著特点是屏幕小，考虑到国际社会通行的水平阅读习惯，下文我们只讨论宽度。_
 
@@ -140,13 +142,13 @@ _注：移动设备的显著特点是屏幕小，考虑到国际社会通行的�
 - 如果 为 PC 设计的 网页的 CSS 宽度描述大于 980px，那么在移动端展示时，初始页面依然会有滚动条
 - 限制了依据视口宽度做媒体查询(Media queries)机制的有效性，因为视口宽度初始为 980px，浏览器不会以 640px、480px 或更低分辨率来启动对应的媒体查询
 
-_注：媒体查询请注意区分"@media screen and (xxx){}"中的`min-device-width`和`min-width`，前者依据的是设备逻辑宽度(screen.width)，后者依据的是视口宽度(window.innerWidth)。_
+_注：媒体查询请注意区分"@media screen and (xxx){}"中的`min-device-width`和`min-width`，前者依据的是设备逻辑宽度(screen.width)，后者依据的是视口宽度(document.documentElement.clientWidth)。_
 
 ### 3.3 可定制的 viewport
 
 _浏览器厂商：“既然我说的数，你们都各种意见，那好吧，你们自己定吧。”_
 
-为了解决上述固定 viewport 宽度的方案所引发的各种问题，Apple 在 iOS Safari 中首先引入了`Viewport Meta Tag`，允许 Web 开发人员定制视口的大小和缩放比例，后续其他的移动浏览器厂商也都支持了此标记（约 2012 年）。
+为了解决上述固定 viewport 宽度的方案所引发的各种问题，Apple 在 iOS Safari 中首先引入了`Viewport Meta Tag`，允许 Web 开发人员定制视口的大小和缩放比例，后续其他的移动浏览器厂商也都支持了此标记（约 2010 年）。
 
 虽然至今 W3C 都未将此标记列入标准，但是，这并不影响我们使用它。
 
@@ -193,7 +195,7 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 - 屏幕物理分辨率：750\*1334
 - 屏幕逻辑分辨率：375\*667 (screen.width/height)
 - 设备像素比(dpr)：2 (window.devicePixelRatio)
-- 浏览器默认视口宽度：980 (window.innerWidth)
+- 浏览器默认视口宽度：980 (document.documentElement.clientWidth)
 
 #### 4.2.1 width
 
@@ -201,7 +203,7 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 <meta name="viewport" content="width=1000" />
 ```
 
-- window.innerWidth 输出 1000
+- document.documentElement.clientWidth 输出 1000
 - div 宽度 1000px 时，横向刚好铺满屏幕，超过出现横向滚动条
 
 ```html
@@ -209,7 +211,7 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 ```
 
 - 效果等同于 width=375
-- window.innerWidth 输出 375
+- document.documentElement.clientWidth 输出 375
 - div 宽度 375px 时，横向刚好铺满屏幕，超过出现横向滚动条
 
 #### 4.2.2 initial-scale
@@ -224,7 +226,7 @@ _在那些难以界定移动还是 PC 的设备中，这种区分可能会存在
 <meta name="viewport" content="initial-scale=2" />
 ```
 
-- window.innerWidth 输出 188 (375/2)
+- document.documentElement.clientWidth 输出 188 (375/2)
 - div 宽度 188px 时，横向刚好铺满屏幕，超过出现横向滚动条
 - scale 倍数越小，视口越大
 
@@ -285,7 +287,7 @@ _相关技术细节和兼容性本文不做更多讨论，详情可以参考：_
 <meta name="viewport" content="width=device-width,initial-scale=2" />
 ```
 
-Safari 的运行结果是"width"的优先级更高，但是这样的对比研究**并没有任何意义**。因为并没有相应的规范约束这件事情，浏览器的兼容表现肯定是千差万别。
+Safari 的运行结果是“按宽度大小”取更大的，但是这样的对比研究**并没有任何意义**。因为并没有相应的规范约束这件事情，浏览器的兼容表现肯定是千差万别。
 
 作为开发者，我们要做的，就是避免冲突。要么只写一个，要么两个都计算正确。从语义表达角度看，建议只设置"width"。从计算方便角度看，可以只设置 initial-scale。
 
@@ -384,7 +386,7 @@ _注：一些文本段落展示类的需求，UI 设计师可能会希望宽屏�
 >
 > - 设计稿中 1rem 表示的 px 数 uiPX1rem = uiWidth/remCount
 > - CSS 中某元素 rem 的值 cssEleWidth= uiEleWidth/uiPX1rem
-> - JS 中根节点的 fontSize = window.innerWidth/remCount
+> - JS 中根节点的 fontSize = document.documentElement.clientWidth/remCount
 
 _github 中近 1 万 star 的 js 库`lib-flexible`便是采用的此方案。_
 
@@ -437,7 +439,7 @@ _注：Android 的 webview 默认未开启 viewport meta 支持，需要手动�
 
 **6.2.2 - 1 “本 rem 方案中，是否可以不设置 viewport 的宽度？”**
 
-如果是纯粹的等比缩放适配需求，按照 6.2.1 中 rem 方案的公式介绍——根节点的 fontSize = window.innerWidth/remCount，是否设置 viewport 的宽度并不影响 fontSize 的计算，因此可以不设置。
+如果是纯粹的等比缩放适配需求，按照 6.2.1 中 rem 方案的公式介绍——根节点的 fontSize = document.documentElement.clientWidth/remCount，是否设置 viewport 的宽度并不影响 fontSize 的计算，因此可以不设置。
 
 **6.2.2 - 2 “dpr 为 2 的设备中，2 倍 UI 稿中标注 height 为 1px 的细线，应该如何实现？”**
 
@@ -470,8 +472,11 @@ _注：Android 的 webview 默认未开启 viewport meta 支持，需要手动�
 dpr，全称 devicePixelRatio，中文译为设备像素比，用来描述单一方向上，设备物理像素的点数/逻辑像素的点数的比率。值越高，屏幕密度越大。大家常说的两倍屏、三倍屏，这里面的倍数指的就是 dpr。
 
 - Web 开发中操作的 px，指的是逻辑像素。由于现代手机屏幕物理发光点的排布越来越密集，逻辑上的 1px 也并非对应屏幕上的 1 个发光点。两倍屏的 1px\*1px 对应的是 2\*2=4 个物理点。
-- 浏览器厂商，根据宿主设备的屏幕物理像素密度，设定了一个 dpr，以便相同数量的逻辑像素在物理世界不同的屏幕上看起来的大小都能差不多。以 iPhone6s 举例，59mm 的屏幕宽度上排布了 750 个发光点，如果 dpr 为 1，那换算下来，PC 视觉上比较舒服的 14px 宽的字体，在手机上显示的物理宽度为 59/750\*14=1.1mm，基本看不清楚的。
-- 至于，浏览器厂商依据什么样的规范来设定 dpr 的值，这里不做具体讨论了。
+- 浏览器厂商，根据宿主设备的屏幕物理像素密度，设定了一个 dpr，以便相同数量的逻辑像素描述的 UI 界面，在物理世界不同的屏幕上看起来的大小都能差不多。以 iPhone6s 举例，59mm 的屏幕宽度上排布了 750 个发光点，如果 dpr 为 1，那换算下来，PC 视觉上比较舒服的 14px 宽的字体，在手机上显示的物理宽度为 59/750\*14=1.1mm，基本看不清楚的。
+- 至于，浏览器厂商依据什么样的标准来设定 dpr 的值，可以参考下面链接。
+
+_参考：
+https://developer.mozilla.org/en-US/docs/Mozilla/Mobile/Viewport_meta_tag#A_pixel_is_not_a_pixel_
 
 ### 8.2 Visual Viewport 和 Layout Viewport
 
