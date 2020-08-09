@@ -107,7 +107,7 @@
   <script type="module">
     import money from "./utils/money.js";
     const _AUTO_REFRESH_TIME = 1000;
-    const _YEAR_RATE_STEP = [[0, 0.06]];
+    const _YEAR_RATE_STEP = [[0, 0.05]];
     //还款状态
     const REPAY_STATUS = {
       noyet: -1,
@@ -119,7 +119,13 @@
         name: "ZhaoMing",
         money: 70000,
         startDay: "2019/06/07",
-        endDay: "2020/06/07"
+        endDay: "2020/07/07",
+        repay: {
+          time: "2020/08/10 00:08",
+          money: 74200,
+          status: 1,
+          way: "招商-招商"
+        }
       }
     ];
 
@@ -148,7 +154,7 @@
           return (num * 100).toFixed(0) + "%";
         },
         investorNameFilter(name) {
-          return name.replace(/(\w+?)([A-Z])(.+)/, function(s, m1, m2, m3) {
+          return name.replace(/(\w+?)([A-Z])(.+)/, function (s, m1, m2, m3) {
             return m1 + " " + m2 + m3.replace(/[a-z]+/g, ".");
           });
         }
