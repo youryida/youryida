@@ -7,7 +7,7 @@
       content="width=device-width,minimum-scale=1,maximum-scale=1,user-scalable=no"
     />
     <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
-    <title>以爱之名❤️携手同行</title>
+    <title>三十而立❤️感恩有你</title>
     <style>
       * {
         margin: 0;
@@ -106,7 +106,7 @@
   <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
   <script type="module">
     import money from "./utils/money.js";
-    const _AUTO_REFRESH_TIME = 1000;
+    const _AUTO_REFRESH_TIME = 1200;
     const _YEAR_RATE_STEP = [[0, 0.05]];
     //还款状态
     const REPAY_STATUS = {
@@ -116,16 +116,16 @@
     };
     const _INVESTORS = [
       {
-        name: "ZhaoMing",
-        money: 70000,
-        startDay: "2019/06/07",
-        endDay: "2020/07/07",
-        repay: {
-          time: "2020/08/10 00:08",
-          money: 74200,
-          status: 1,
-          way: "招商-招商"
-        }
+        name: "SongJieLin",
+        money: 42000,
+        startDay: "2020/12/31",
+        endDay: "2020/06/30"
+        // repay: {
+        //   time: "2020/08/10 00:08",
+        //   money: 0,
+        //   status: 1,
+        //   way: "招商-"
+        // }
       }
     ];
 
@@ -216,15 +216,7 @@
 
           return gains;
         },
-        /*
-            计算当期年利率
-             */
-        calcYearRateByStartDay(startDay) {
-          return money.getCurrentPeriodYearRate(
-            new Date(startDay),
-            _YEAR_RATE_STEP
-          );
-        },
+
         /**
          * 还款时间渲染
          */

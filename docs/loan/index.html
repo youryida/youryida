@@ -106,7 +106,7 @@
   <script src="https://cdn.bootcss.com/vue/2.5.16/vue.min.js"></script>
   <script type="module">
     import money from "./utils/money.js";
-    const _AUTO_REFRESH_TIME = 1200;
+    const _AUTO_REFRESH_TIME = 600;
     const _YEAR_RATE_STEP = [[0, 0.06]];
     //还款状态
     const REPAY_STATUS = {
@@ -299,13 +299,13 @@
         name: "LiuHuiJie",
         money: 60000,
         startDay: "2018/10/23",
-        endDay: "2020/10/23" //不收息 折算礼物 146
-        // repay: {
-        //   time: "2019/06/30 10:00", // 预计6月底还清
-        //   money: 10146,
-        //   status: 1,
-        //   way: "招商-山东农信社" //不收息 折算礼物 146
-        // }
+        endDay: "2020/10/23", //不收息 折算礼物 146
+        repay: {
+          time: "2019/07/03 09:14", // 0621 0627 0703三笔还清
+          money: 62465,
+          status: 1,
+          way: "招商-邮政" //不收息
+        }
       }
     ];
 
@@ -346,7 +346,7 @@
           return (num * 100).toFixed(0) + "%";
         },
         investorNameFilter(name) {
-          return name.replace(/(\w+?)([A-Z])(.+)/, function(s, m1, m2, m3) {
+          return name.replace(/(\w+?)([A-Z])(.+)/, function (s, m1, m2, m3) {
             return m1 + " " + m2 + m3.replace(/[a-z]+/g, ".");
           });
         }
@@ -408,15 +408,7 @@
 
           return gains;
         },
-        /*
-            计算当期年利率
-             */
-        calcYearRateByStartDay(startDay) {
-          return money.getCurrentPeriodYearRate(
-            new Date(startDay),
-            _YEAR_RATE_STEP
-          );
-        },
+
         /**
          * 还款时间渲染
          */
