@@ -121,7 +121,20 @@
         name: "SongJieLin",
         money: 450000,
         startDay: "2021/11/02",
-        endDay: "2022/11/03"
+        endDay: "2022/11/02"
+      },
+      {
+        name: "WangShengXiang",
+        money: 300000,
+        startDay: "2021/11/03",
+        endDay: "2022/05/03"
+      },
+      {
+        name: "WangShengXiang",
+        money: 300000,
+        specialYearRate: 0.05,
+        startDay: "2021/11/03",
+        endDay: "2022/02/03"
       }
     ];
 
@@ -173,7 +186,7 @@
             let nowDate = new Date(),
               startDate = new Date(one.startDay);
             let zeroPointDate = new Date(nowDate.toLocaleDateString());
-            let yearRate = money.getCurrentPeriodYearRate(
+            let yearRate = one.specialYearRate || money.getCurrentPeriodYearRate(
               startDate,
               _YEAR_RATE_STEP
             );
