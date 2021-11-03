@@ -86,7 +86,7 @@
           <tr v-for="one in investors">
             <td>{{ one.name | investorNameFilter }}</td>
             <td>*</td>
-            <td>{{one.specialYearRate || 0.045}}</td>
+            <td>{{(one.specialYearRate || 0.045) | percentageFilter()}}</td>
             <td>{{ one.startDay }}</td>
             <td>{{ one.endDay }}</td>
             <td v-html="repayRender(one)"></td>
