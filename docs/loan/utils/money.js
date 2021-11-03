@@ -1,5 +1,11 @@
 const money = {
     /*
+    收益率格式化x%
+     */
+    getFormatRate(rate) {
+        return rate ? rate*100+'%' : '--';
+    },
+    /*
     两个Date的累计收益
      */
     getDateDiffGains(baseMoney, yearRate, startDate, endDate) {
