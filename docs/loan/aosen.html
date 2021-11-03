@@ -160,7 +160,7 @@
           return result;
         },
         percentageFilter(num) {
-          return (num * 100).toFixed(0) + "%";
+          return money.getFormatRate(num);
         },
         investorNameFilter(name) {
           return name.replace(/(\w+?)([A-Z])(.+)/, function (s, m1, m2, m3) {
