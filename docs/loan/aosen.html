@@ -73,10 +73,10 @@
         <thead>
           <tr>
             <th>出借人</th>
-            <th>额度</th>
+            <!-- <th>额度</th> -->
             <th>年利</th>
             <th>起息日</th>
-            <th>预还款日</th>
+            <th>最迟还款日</th>
             <th>还款日</th>
             <th>今日计息</th>
             <th>累积计息</th>
@@ -85,7 +85,7 @@
         <tbody>
           <tr v-for="one in investors">
             <td>{{ one.name | investorNameFilter }}</td>
-            <td>*</td>
+            <!-- <td>*</td> -->
             <td>{{(one.specialYearRate || 0.045) | percentageFilter()}}</td>
             <td>{{ one.startDay }}</td>
             <td>{{ one.endDay }}</td>
@@ -96,7 +96,10 @@
         </tbody>
         <tfoot>
           <tr>
-            <td :colspan="4">注：次日起息，实时计息(短期折腾成本高,特利率补偿)</td>
+            <td :colspan="4">
+              <p>1. 当日起息，实时计息</p>
+              <p>2. 短期折腾成本高,特利率补偿</p>
+            </td>
             <td :colspan="ui.table.cols-4" class="ta-r">
               <i>via xuefeng 借款备忘录</i>
             </td>
@@ -135,6 +138,12 @@
         specialYearRate: 0.05,
         startDay: "2021/11/03",
         endDay: "2022/02/03"
+      },
+      {
+        name: "JiGuangYun",
+        money: 80000,
+        startDay: "2021/11/03",
+        endDay: "2022/11/03"
       }
     ];
 
