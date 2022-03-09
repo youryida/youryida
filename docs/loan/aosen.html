@@ -185,7 +185,13 @@
         name: "JiGuangYun",
         money: 50000,
         startDay: "2021/11/03",
-        endDay: "2022/11/03"
+        endDay: "2022/11/03",
+        repay: {
+          time: "2022/03/09 21:15",
+          money: 50788,
+          status: 1,
+          way: "招商-中国银行"
+        }
       },
       {
         name: "WangShengXiang",
@@ -250,10 +256,9 @@
             let nowDate = new Date(),
               startDate = new Date(one.startDay);
             let zeroPointDate = new Date(nowDate.toLocaleDateString());
-            let yearRate = one.specialYearRate || money.getCurrentPeriodYearRate(
-              startDate,
-              _YEAR_RATE_STEP
-            );
+            let yearRate =
+              one.specialYearRate ||
+              money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
             gains = money.getDateDiffGains(
               baseMoney,
               yearRate,
@@ -275,10 +280,9 @@
             let baseMoney = one.money;
             let nowDate = new Date(),
               startDate = new Date(one.startDay);
-            let yearRate = one.specialYearRate || money.getCurrentPeriodYearRate(
-              startDate,
-              _YEAR_RATE_STEP
-            );
+            let yearRate =
+              one.specialYearRate ||
+              money.getCurrentPeriodYearRate(startDate, _YEAR_RATE_STEP);
             gains = money.getDateDiffGains(
               baseMoney,
               yearRate,
