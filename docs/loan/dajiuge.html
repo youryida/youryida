@@ -88,8 +88,8 @@
             <td>{{ one.startDay }}</td>
             <td>{{ one.endDay }}</td>
             <td v-html="repayRender(one)"></td>
-            <td>{{todayGains(one) | yuanFilter(4,"已结清")}}</td>
-            <td>{{totalGains(one) | yuanFilter(2)}}</td>
+            <td>{{todayGains(one) | yuanFilter(4,"已结清","明日计息")}}</td>
+            <td>{{totalGains(one) | yuanFilter(2,"已结清","明日计息")}}</td>
           </tr>
         </tbody>
         <tfoot>
@@ -181,7 +181,8 @@
         this.gainsAutoRefresh();
       },
       filters: {
-        yuanFilter(num, fixed = 3, zeroText = "-") {
+        yuanFilter(num, fixed = 3, zeroText = "-",minusText="-") {
+          if(num<0) return minusText;
           let result = num.toFixed(fixed) + "";
           result = result.replace(/\.?0*$/, "");
           result = result == 0 ? zeroText : result;
