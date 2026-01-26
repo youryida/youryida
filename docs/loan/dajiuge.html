@@ -84,7 +84,7 @@
         <tbody>
           <tr v-for="one in investors">
             <td>{{ one.name | investorNameFilter }}</td>
-            <td>*</td>
+            <td>{{one.money}}</td>
             <td>{{ one.startDay }}</td>
             <td>{{ one.endDay }}</td>
             <td v-html="repayRender(one)"></td>
@@ -114,18 +114,55 @@
       paying: 0, //部分偿还 约定为偿还当期全部利息和部分本金，后续利息应该按剩余本金计算
       settled: 1
     };
+
+    // 累计48w
     const _INVESTORS = [
       {
         name: "ZhaoZongKuan",
-        money: 480000,
+        money: 80000,
         startDay: "2024/03/17",
-        endDay: "2027/03/17"
-        // repay: {
-        //   time: "2021/01/13 14:52",
-        //   money: 42080,
-        //   status: 1,
-        //   way: "招商-招商"
-        // }
+        endDay: "2027/03/17",
+        yearRateStep:[[0,0.03]],
+        repay: {
+          time: "2025/10/03 14:18",
+          money: 80000,
+          status: 1,
+          way: "招商-交通"
+        }
+      },
+      {
+        name: "ZhaoZongKuan",
+        money: 50000,
+        startDay: "2024/03/17",
+        endDay: "2027/03/17",
+        yearRateStep:[[0,0.03]],
+        repay: {
+          time: "2025/12/07 13:55",
+          money: 50000,
+          status: 1,
+          way: "招商-交通"
+        }
+      },
+      {
+        name: "ZhaoZongKuan",
+        money: 350000,
+        startDay: "2024/03/17",
+        endDay: "2027/03/17",
+        yearRateStep:[[0,0.03]],
+        repay: {
+          time: "2026/01/26 18:00",
+          money: 350000,
+          status: 1,
+          way: "招商-交通"
+        }
+      },
+    // 2026/01/26 大舅哥不着急要，下面按重新借钱35w算
+      {
+        name: "ZhaoZongKuan",
+        money: 350000,
+        startDay: "2026/01/27",
+        endDay: "2036/01/27",
+        yearRateStep:[[0,0.02]],
       }
     ];
 
@@ -179,7 +216,7 @@
             let zeroPointDate = new Date(nowDate.toLocaleDateString());
             let yearRate = money.getCurrentPeriodYearRate(
               startDate,
-              _YEAR_RATE_STEP
+              one.yearRateStep || _YEAR_RATE_STEP
             );
             gains = money.getDateDiffGains(
               baseMoney,
