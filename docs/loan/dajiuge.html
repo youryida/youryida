@@ -232,12 +232,12 @@
           let gains = 0,
             repay = one.repay;
           if (repay && repay.status == REPAY_STATUS.settled) {
-            //历史已结清的
+            //历史已结清 且 已硬编的
             gains = repay.money - one.money;
-          } else {
-            //未结过的
+            if(gains) return gains;
+            // 历史已结清 且 未硬编的
             let baseMoney = one.money;
-            let nowDate = new Date(),
+            let endDate = new Date(one.repay.time),
               startDate = new Date(one.startDay);
             let yearRate = money.getCurrentPeriodYearRate(
               startDate,
@@ -247,7 +247,22 @@
               baseMoney,
               yearRate,
               startDate,
-              nowDate
+              endDate
+            );
+          } else {
+            //未结过的
+            let baseMoney = one.money;
+            let endDate = new Date(),
+              startDate = new Date(one.startDay);
+            let yearRate = money.getCurrentPeriodYearRate(
+              startDate,
+              _YEAR_RATE_STEP
+            );
+            gains = money.getDateDiffGains(
+              baseMoney,
+              yearRate,
+              startDate,
+              endDate
             );
           }
 
