@@ -214,6 +214,8 @@
             let baseMoney = one.money;
             let nowDate = new Date(),
               startDate = new Date(one.startDay);
+            if(nowDate < startDate) return -1;
+            
             let zeroPointDate = new Date(nowDate.toLocaleDateString());
             let yearRate = money.getCurrentPeriodYearRate(
               startDate,
@@ -255,6 +257,8 @@
             let baseMoney = one.money;
             let endDate = new Date(),
               startDate = new Date(one.startDay);
+
+            if(endDate<startDate) return -1;
             let yearRate = money.getCurrentPeriodYearRate(
               startDate,
               _YEAR_RATE_STEP
