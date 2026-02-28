@@ -74,7 +74,7 @@
           <tr>
             <th>出借人</th>
             <th>额度</th>
-            <th>起息日</th>
+            <th>借款日</th>
             <th>预还款日</th>
             <th>还款日</th>
             <th>今日计息</th>
@@ -244,7 +244,7 @@
               startDate = new Date(one.startDay);
             let yearRate = money.getCurrentPeriodYearRate(
               startDate,
-              _YEAR_RATE_STEP
+              one.yearRateStep || _YEAR_RATE_STEP
             );
             gains = money.getDateDiffGains(
               baseMoney,
@@ -261,7 +261,7 @@
             if(endDate<startDate) return -1;
             let yearRate = money.getCurrentPeriodYearRate(
               startDate,
-              _YEAR_RATE_STEP
+              one.yearRateStep || _YEAR_RATE_STEP
             );
             gains = money.getDateDiffGains(
               baseMoney,
